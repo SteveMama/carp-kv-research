@@ -1,0 +1,198 @@
+{
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "tasks": [
+    "qasper",
+    "multifieldqa_en",
+    "2wikimqa"
+  ],
+  "samples_per_task": 1,
+  "decode_steps": 8,
+  "carp": {
+    "weights": [
+      1.8000726699829102,
+      0.5251012444496155,
+      -1.2749722003936768,
+      -0.1176140308380127,
+      0.8226953744888306,
+      -1.1889461278915405,
+      -0.938348650932312,
+      -0.25060683488845825,
+      -0.001654303283430636,
+      0.18569262325763702,
+      0.25860434770584106,
+      0.11190285533666611,
+      0.13651010394096375
+    ],
+    "bias": -2.761060371845965,
+    "low_bits": [
+      4,
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "high_bits": [
+      4,
+      4,
+      3,
+      3,
+      2,
+      2
+    ],
+    "base_fraction": 0.02001953125,
+    "max_fraction": 0.15,
+    "risk_tau": 2.0,
+    "risk_lambda": 0.5,
+    "risk_gamma": 1.0,
+    "risk_beta": 1.0,
+    "anchor_ratio": 0.25,
+    "exact_fraction": 0.0,
+    "exact_head_risk_threshold": 0.7
+  },
+  "records": [
+    {
+      "task": "qasper",
+      "item_id": "43ffd7775c3b4a541e227c120bffcc7c7b31fb184ba94d69",
+      "exact_text": " and Xiaoyu Wang for their help",
+      "carp_text": " and Xiaohong Wang for their help",
+      "exact_ids": [
+        323,
+        40135,
+        2253,
+        84,
+        28246,
+        369,
+        862,
+        1492
+      ],
+      "carp_ids": [
+        323,
+        40135,
+        2267,
+        644,
+        28246,
+        369,
+        862,
+        1492
+      ],
+      "step_kls": [
+        0.0,
+        0.00906121451407671,
+        0.023052850738167763,
+        2.5689995288848877,
+        0.08227857947349548,
+        0.019987186416983604,
+        0.019070271402597427,
+        0.028764765709638596
+      ],
+      "first_divergence_step": 3,
+      "token_match_rate": 0.75,
+      "set_overlap": 0.75,
+      "mean_exact_head_fraction": 0.1171875
+    },
+    {
+      "task": "multifieldqa_en",
+      "item_id": "c6eba7d0323b89bbdb0fbad233543848add08dcbfcbd875b",
+      "exact_text": "olang/bin/chaintool\nmake:",
+      "carp_text": "olang/bin/chaintool\ncp .",
+      "exact_ids": [
+        37287,
+        8749,
+        14,
+        8819,
+        14172,
+        198,
+        6927,
+        25
+      ],
+      "carp_ids": [
+        37287,
+        8749,
+        14,
+        8819,
+        14172,
+        198,
+        4672,
+        659
+      ],
+      "step_kls": [
+        0.0,
+        0.07678583264350891,
+        0.17083211243152618,
+        0.11358654499053955,
+        0.25494128465652466,
+        0.031832531094551086,
+        0.07634158432483673,
+        6.1349382400512695
+      ],
+      "first_divergence_step": 7,
+      "token_match_rate": 0.75,
+      "set_overlap": 0.75,
+      "mean_exact_head_fraction": 0.22916666666666666
+    },
+    {
+      "task": "2wikimqa",
+      "item_id": "cc32d31bbeb3e0d8787e963cf0843ae6b22f33817eb5a587",
+      "exact_text": " the 2006 census,",
+      "carp_text": " the 2006 census,",
+      "exact_ids": [
+        279,
+        220,
+        17,
+        15,
+        15,
+        21,
+        43602,
+        11
+      ],
+      "carp_ids": [
+        279,
+        220,
+        17,
+        15,
+        15,
+        21,
+        43602,
+        11
+      ],
+      "step_kls": [
+        0.0,
+        0.001038011396303773,
+        1.9264953152742237e-05,
+        3.293292684247717e-05,
+        0.011242324486374855,
+        0.05846090987324715,
+        0.030282659456133842,
+        0.01702583022415638
+      ],
+      "first_divergence_step": null,
+      "token_match_rate": 1.0,
+      "set_overlap": 1.0,
+      "mean_exact_head_fraction": 0.19270833333333331
+    }
+  ],
+  "summary": {
+    "qasper": {
+      "token_match_rate": 0.75,
+      "first_divergence_step": 3.0,
+      "set_overlap": 0.75,
+      "mean_exact_head_fraction": 0.1171875,
+      "mean_final_step_kl": 0.028764765709638596
+    },
+    "multifieldqa_en": {
+      "token_match_rate": 0.75,
+      "first_divergence_step": 7.0,
+      "set_overlap": 0.75,
+      "mean_exact_head_fraction": 0.22916666666666666,
+      "mean_final_step_kl": 6.1349382400512695
+    },
+    "2wikimqa": {
+      "token_match_rate": 1.0,
+      "first_divergence_step": 9.0,
+      "set_overlap": 1.0,
+      "mean_exact_head_fraction": 0.19270833333333331,
+      "mean_final_step_kl": 0.01702583022415638
+    }
+  }
+}

@@ -1,0 +1,551 @@
+## 2026-03-25 19:57:06
+- Notes: smoke_longbench_qasper_1
+- Tasks: qasper
+- Samples/task: 1
+- Full-context token cap: 2048
+- Top-k chunks: 3
+- Peak RSS (MB): 694.9
+- qasper: best `causal_full` score=100.00, samples=1, trunc_rate=0.00
+## 2026-03-25 19:58:34
+- Notes: longbench_subset_v1_qwen_cpu_safe
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 986.3
+- qasper: best `causal_full` score=50.00, samples=2, trunc_rate=0.00
+- multifieldqa_en: best `causal_full` score=18.60, samples=2, trunc_rate=0.50
+- 2wikimqa: best `streaming_press` score=50.00, samples=2, trunc_rate=0.00
+## 2026-03-25 19:59:29
+- Notes: multifield_ablation_top2_chunk80
+- Tasks: multifieldqa_en
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 2
+- Peak RSS (MB): 954.0
+- multifieldqa_en: best `qaware_topk` score=40.66, samples=2, trunc_rate=0.50
+## 2026-03-25 20:01:21
+- Notes: longbench_subset_v2_adaptive
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1043.3
+- qasper: best `causal_full` score=50.00, samples=2, trunc_rate=0.00
+- multifieldqa_en: best `causal_full` score=18.60, samples=2, trunc_rate=0.50
+- 2wikimqa: best `streaming_press` score=50.00, samples=2, trunc_rate=0.00
+## 2026-03-25 20:02:21
+- Notes: multifield_adaptive_chunking
+- Tasks: multifieldqa_en
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1003.8
+- multifieldqa_en: best `adaptive_topk` score=40.66, samples=2, trunc_rate=0.50
+## 2026-03-25 20:03:28
+- Notes: longbench_subset_v3_adaptive_chunks
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1317.8
+- qasper: best `causal_full` score=50.00, samples=2, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=40.66, samples=2, trunc_rate=0.50
+- 2wikimqa: best `streaming_press` score=50.00, samples=2, trunc_rate=0.00
+## 2026-03-25 20:09:22
+- Notes: longbench_lit_smoke_1sample
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1742.9
+- qasper: best `causal_full` score=100.00, samples=1, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=9.09, samples=1, trunc_rate=1.00
+- 2wikimqa: best `streaming_press` score=100.00, samples=1, trunc_rate=0.00
+## 2026-03-25 20:10:58
+- Notes: longbench_subset_v4_bm25_llmlingua
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1886.5
+- qasper: best `causal_full` score=50.00, samples=2, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=40.66, samples=2, trunc_rate=0.50
+- 2wikimqa: best `streaming_press` score=50.00, samples=2, trunc_rate=0.00
+## 2026-03-25 20:18:44
+- Notes: longbench_subset_v5_snapkv
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 2
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1981.7
+- qasper: best `causal_full` score=50.00, samples=2, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=40.66, samples=2, trunc_rate=0.50
+- 2wikimqa: best `streaming_press` score=50.00, samples=2, trunc_rate=0.00
+## 2026-03-25 20:24:50
+- Notes: longbench_subset_v6_5samples
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1480.2
+- qasper: best `dense_topk` score=46.32, samples=5, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=44.41, samples=5, trunc_rate=0.40
+- 2wikimqa: best `dense_topk` score=40.00, samples=5, trunc_rate=0.00
+## 2026-03-25 20:33:18
+- Notes: longbench_subset_v7_hybrid_mix
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1518.5
+- qasper: best `dense_topk` score=46.32, samples=5, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=44.41, samples=5, trunc_rate=0.40
+- 2wikimqa: best `dense_topk` score=40.00, samples=5, trunc_rate=0.00
+## 2026-03-25 20:45:49
+- Notes: longbench_subset_v8_learned_reranker
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 2033.8
+- qasper: best `learned_mix_topk` score=28.00, samples=5, trunc_rate=0.00
+- multifieldqa_en: best `learned_mix_topk` score=59.21, samples=5, trunc_rate=0.20
+- 2wikimqa: best `expected_press` score=40.00, samples=5, trunc_rate=0.00
+## 2026-03-25 20:51:33
+- Notes: longbench_subset_v9_pairwise_reranker
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1825.8
+- qasper: best `learned_mix_topk` score=28.00, samples=5, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=58.41, samples=5, trunc_rate=0.20
+- 2wikimqa: best `expected_press` score=40.00, samples=5, trunc_rate=0.00
+## 2026-03-25 20:55:23
+- Notes: longbench_subset_v10_task_adaptive
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1907.4
+- qasper: best `learned_mix_topk` score=28.00, samples=5, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=58.41, samples=5, trunc_rate=0.20
+- 2wikimqa: best `expected_press` score=40.00, samples=5, trunc_rate=0.00
+## 2026-03-25 21:02:45
+- Notes: longbench_subset_v11_learned_router
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Full-context token cap: 3072
+- Top-k chunks: 4
+- Peak RSS (MB): 1788.0
+- qasper: best `learned_mix_topk` score=28.00, samples=5, trunc_rate=0.00
+- multifieldqa_en: best `adaptive_topk` score=58.41, samples=5, trunc_rate=0.20
+- 2wikimqa: best `expected_press` score=40.00, samples=5, trunc_rate=0.00
+## 2026-03-25 21:35:00
+- Notes: qwen_polar_math_profile_v1
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 768
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - randomized Hadamard preconditioning tightens deeper polar angle distributions around `pi/4`
+  - fixed inverse-preconditioner bug and circular-angle quantization bug in the prototype
+  - corrected polar codec on held-out real Qwen KV vectors:
+    - `4,3,2,2,2,2` bits/level at `3.3438` bits/coord: top1=`0.4609`, top8=`0.9063`, top16=`0.9727`
+    - `4,4,3,2,2,2` bits/level at `3.7188` bits/coord: top1=`0.4727`, top8=`0.9570`, top16=`0.9922`
+    - `4,4,3,3,2,2` bits/level at `3.7813` bits/coord: top1=`0.5117`, top8=`0.9492`, top16=`0.9922`
+  - plain per-channel `q4` baseline:
+    - top1=`0.1797`, top8=`0.6016`, top16=`0.7500`
+  - original low-rank+sparse codec remains weak at aggressive budgets:
+    - rank=`8`, sparse=`4`: top1=`0.0234`, top8=`0.0898`, top16=`0.1484`
+    - even rank=`32`, sparse=`16` only reaches top1=`0.3555`, top8=`0.8320`, top16=`0.9375`
+## 2026-03-25 21:47:00
+- Notes: qwen_polar_mixed_precision_sweep_v1
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 768
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - tested mixed-precision polar with low polar `4,3,2,2,2,2` and high polar `4,4,3,3,2,2`
+  - query-adaptive selector used the original low-rank+sparse math
+  - uniform low polar:
+    - bits/coord=`3.3438`, top1=`0.4609`, top8=`0.9063`, top16=`0.9727`
+  - best mixed operating points:
+    - rank=`16`, sparse=`8`, top fraction=`0.10`: bits/coord=`3.3875`, top1=`0.5234`, top8=`0.9453`, top16=`0.9844`
+    - rank=`32`, sparse=`16`, top fraction=`0.05`: bits/coord=`3.3656`, top1=`0.5117`, top8=`0.9492`, top16=`0.9922`
+  - interpretation:
+    - mixed precision gives a real gain at tiny additional bit budget
+    - the original math is more useful as a precision selector than as the primary codec
+    - current selector gains saturate quickly; top1 no longer improves much past the uniform higher-bit polar setting
+## 2026-03-25 21:58:00
+- Notes: qwen_polar_learned_selector_v1
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 768
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - trained a small selector on a separate held-out slice:
+    - train keys=`1024`, train queries=`128`
+    - eval keys=`2048`, eval queries=`256`
+  - low polar `4,3,2,2,2,2`:
+    - bits/coord=`3.3438`, top1=`0.6563`, top8=`0.9961`, top16=`1.0000`
+  - high polar `4,4,3,3,2,2`:
+    - bits/coord=`3.7813`, top1=`0.6719`, top8=`1.0000`, top16=`1.0000`
+  - mixed precision at top fraction=`0.10`, bits/coord=`3.3875`:
+    - low-rank selector: top1=`0.6719`, top8=`1.0000`, top16=`1.0000`
+    - learned selector: top1=`0.6719`, top8=`1.0000`, top16=`1.0000`
+    - oracle selector: top1=`0.6719`, top8=`1.0000`, top16=`1.0000`
+  - interpretation:
+    - selector quality is no longer the main bottleneck
+    - the current high-bit codec only offers a modest margin over the low-bit codec on the already-strong candidate set
+## 2026-03-25 22:20:00
+- Notes: srpq_v1_qwen_validation
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 768
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - first standalone `SRPQ-Compression` module implemented in `srpq_compress.py`
+  - compared against the current strong uniform high-polar baseline on held-out Qwen KV vectors
+  - high polar `4,4,3,3,2,2`:
+    - bits/coord=`3.7813`
+    - top1=`0.5117`, top8=`0.9492`, top16=`0.9922`
+  - `SRPQ-v1` with rank=`16`, thresholds `(0.3, 0.1)`:
+    - estimated key bits/token=`225.5`
+    - top1=`0.4609`, top8=`0.8359`, top16=`0.8867`
+    - class fractions: innovation=`0.1182`, moderate=`0.7646`, background=`0.1172`
+  - interpretation:
+    - the decomposition works mechanically
+    - but too many tokens are falling into the moderate residual path
+    - current thresholds/bit schedule are not yet giving the hoped-for compression-quality tradeoff
+## 2026-03-25 23:10:00
+- Notes: carp_kv_final_consolidation
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 768
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - consolidated the final KV path into `CARP-KV`:
+    - low polar backbone `4,3,2,2,2,2`
+    - promoted high polar path `4,4,3,3,2,2`
+    - learned promotion selector trained on held-out top-8 attention keys
+    - spectral innovation used as an additional static prior
+  - held-out result:
+    - low polar:
+      - bits/coord=`3.3438`, top1=`0.6563`, top8=`0.9961`, top16=`1.0000`
+    - high polar:
+      - bits/coord=`3.7813`, top1=`0.6719`, top8=`1.0000`, top16=`1.0000`
+    - `CARP-KV`:
+      - mean promoted fraction=`0.0200`
+      - effective bits/coord=`3.3525`
+      - top1=`0.6719`, top8=`1.0000`, top16=`1.0000`
+  - interpretation:
+    - this is the best current codec result in the project
+    - it matches the stronger high-polar retrieval behavior while upgrading only about `2%` of keys
+    - the novelty now sits in calibrated promotion, not in replacing the polar backbone
+## 2026-03-25 23:40:00
+- Notes: carp_kv_end_to_end_second_step
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 512
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - wired `CARP-KV` into a real Qwen cache path by patching `Qwen2Attention.forward` to pass query states into a custom cache layer
+  - this test is key-only compression:
+    - values remain exact
+    - prefill remains exact
+    - compression is applied on the first real decode step after prefill
+  - results on the second decode step:
+    - `qasper`: baseline top1 preserved exactly, baseline top1 remained in CARP top5, `KL=0.0101`
+    - `multifieldqa_en`: baseline top1 changed, baseline top1 not in CARP top5, `KL=0.8272`
+    - `2wikimqa`: baseline top1 preserved exactly, baseline top1 remained in CARP top5, `KL=0.9973`
+  - interpretation:
+    - the promotion gate survives actual cache-path decoding on some prompts
+    - it is not yet robust enough to claim end-to-end generation safety
+    - the next bottleneck is prompt-level calibration under real decode dynamics, not offline selector fitting alone
+## 2026-03-26 01:20:00
+- Notes: carp_kv_margin_adaptive_debug
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1 calibration prompt + 1 held-out prompt
+- Context token cap: 512
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - implemented margin-adaptive promotion inside the real cache path:
+    - normalized per-head low-polar scores with z-scoring before computing margin
+    - normalized entropy by sequence length
+    - added nonlinear promotion budget control `risk_gamma`
+    - added cache instrumentation for mean/max promoted fraction, risk, margin, and entropy
+    - added an anchor mechanism that reserves part of the promotion budget for top low-polar keys
+  - first adaptive version was under-scaled:
+    - on held-out prompts it only used about `2.7%` promoted keys on average
+    - `multifieldqa_en` remained unstable
+  - normalized-risk version fixed the scale problem:
+    - on the calibration `multifieldqa_en` prompt, the best setting was `tau=2.0`, `lambda=0.5`
+    - calibration metrics at that setting:
+      - `KL=0.0421`
+      - baseline top1 remained in CARP top5
+      - mean promoted fraction=`0.0877`
+  - held-out second-step results with that setting:
+    - `qasper`:
+      - `KL=0.0228`
+      - top1 preserved exactly
+      - baseline top1 remained in CARP top5
+      - mean promoted fraction=`0.0864`
+    - `2wikimqa`:
+      - `KL=0.0064`
+      - top1 preserved exactly
+      - baseline top1 remained in CARP top5
+      - mean promoted fraction=`0.0881`
+    - `multifieldqa_en`:
+      - `KL=0.5220`
+      - baseline top1 still not in CARP top5
+      - mean promoted fraction=`0.0892`
+  - additional budget stress test on the failing `multifieldqa_en` prompt:
+    - fixed promoted fractions from `5%` through `30%` did not monotonically fix the error
+    - anchor ratios from `0.0` to `1.0` also did not eliminate the failure
+  - interpretation:
+    - margin-adaptive promotion is a real improvement over the original cache-path result
+    - the remaining failure is not just "promote more"
+    - the real bottleneck is selection quality under prompt-specific decode dynamics
+    - next step should target a better promotion signal, not only a larger budget
+## 2026-03-26 02:05:00
+- Notes: carp_kv_disagreement_risk
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 512
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - added a disagreement-triggered promotion bonus:
+    - compute top-8 overlap between low-polar scores and low-rank proxy scores
+    - define disagreement as `1 - overlap`
+    - add `beta * disagreement` to the risk logit before budget allocation
+  - best tested setting in the real cache path:
+    - `tau=2.0`, `lambda=0.5`, `gamma=1.0`, `beta=1.0`, `anchor_ratio=0.25`
+  - second-step results:
+    - `qasper`:
+      - `KL=0.0222`
+      - top1 preserved exactly
+      - baseline top1 remained in CARP top5
+      - mean promoted fraction=`0.1011`
+    - `multifieldqa_en`:
+      - `KL=0.4857`
+      - baseline top1 now remained in CARP top5
+      - top1 still changed
+      - mean promoted fraction=`0.1061`
+    - `2wikimqa`:
+      - `KL=0.0141`
+      - top1 preserved exactly
+      - baseline top1 remained in CARP top5
+      - mean promoted fraction=`0.1041`
+  - interpretation:
+    - disagreement-aware risk is the first cache-path change that fixes the `multifieldqa_en` top5 miss
+    - the failure mode is now softer: KL is still too high, but the exact candidate stays inside the preserved neighborhood
+    - next step should target score fidelity for promoted keys, not just better identification of risky prompts
+## 2026-03-26 02:35:00
+- Notes: carp_kv_exact_tier_probe
+- Tasks: multifieldqa_en
+- Samples/task: 1
+- Context token cap: 512
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - implemented a third tier in the cache path:
+    - low polar for most tokens
+    - high polar for the promoted set
+    - exact fp16 fallback for a tiny critical subset inside the promoted set
+  - used disagreement-aware CARP as the base setting:
+    - `tau=2.0`, `lambda=0.5`, `gamma=1.0`, `beta=1.0`
+  - exact-tier sweep on the failing `multifieldqa_en` prompt:
+    - `exact_fraction=0.0`: `KL=0.4857`, top1 in top5=`yes`
+    - `exact_fraction=0.0025`: `KL=0.5441`, top1 in top5=`no`
+    - `exact_fraction=0.005`: `KL=0.6009`, top1 in top5=`no`
+    - `exact_fraction=0.01`: `KL=0.4909`, top1 in top5=`yes`
+    - `exact_fraction=0.02`: `KL=0.4831`, top1 in top5=`yes`
+  - interpretation:
+    - an exact tier is plausible in principle, and the literature supports it
+    - but the current rule for selecting critical fp16 tokens does not improve score fidelity
+    - the bottleneck is now exact-tier token selection, not whether an exact tier exists
+## 2026-03-26 03:20:00
+- Notes: carp_kv_exact_head_fallback
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Context token cap: 512
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - after establishing that even uniform high polar still fails on `multifieldqa_en`, added a head-level exact fallback:
+    - if a head's live risk exceeds a threshold, keep the entire head exact instead of using quantized keys
+  - this targets the case where residual error is distributed across many tokens inside a few unstable heads
+  - tested two operating points:
+    - threshold `0.8`:
+      - `qasper`: `KL=0.0529`, top1 preserved, mean exact-head fraction=`0.0208`
+      - `multifieldqa_en`: `KL=0.2278`, top1 preserved, mean exact-head fraction=`0.0208`
+      - `2wikimqa`: `KL=0.0013`, top1 preserved, mean exact-head fraction=`0.0208`
+    - threshold `0.7`:
+      - `qasper`: `KL=0.0091`, top1 preserved, mean exact-head fraction=`0.1042`
+      - `multifieldqa_en`: `KL=0.0768`, top1 preserved, mean exact-head fraction=`0.2292`
+      - `2wikimqa`: `KL=0.0010`, top1 preserved, mean exact-head fraction=`0.2500`
+  - interpretation:
+    - the dominant remaining failure mode was head-level, not token-level
+    - exacting a small fraction of risky heads is much more effective than exacting a tiny subset of promoted tokens
+    - threshold `0.8` is the better cheap setting; threshold `0.7` is the better fidelity setting
+## 2026-03-26 04:10:00
+- Notes: carp_kv_5sample_cache_path_comparison
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 5
+- Context token cap: 512
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - completed the 15-sample second-step decode sweep for the two viable exact-head thresholds
+  - threshold `0.8`:
+    - median `KL=0.0545`
+    - mean `KL=0.1214`
+    - worst `KL=0.9420`
+    - top1 preserved rate=`14/15 = 93.3%`
+    - top1-in-top5 rate=`14/15 = 93.3%`
+    - mean exact-head fraction=`0.0194`
+    - approximate mean key bits/coord=`3.60`
+  - threshold `0.7`:
+    - median `KL=0.0485`
+    - mean `KL=0.0408`
+    - worst `KL=0.1492`
+    - top1 preserved rate=`15/15 = 100%`
+    - top1-in-top5 rate=`15/15 = 100%`
+    - mean exact-head fraction=`0.2069`
+    - approximate mean key bits/coord=`5.97`
+  - interpretation:
+    - `0.8` is the cheaper operating point but fails the robustness criterion because one prompt still breaks badly
+    - `0.7` is the first operating point that is robust on all 15 samples
+    - the next step should use `0.7` for multi-step generation testing, while keeping `0.8` as the low-cost comparison point
+## 2026-03-26 06:05:00
+- Notes: carp_kv_8step_multistep_decode
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Decode steps: 8
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Finding:
+  - completed the first multi-step exact-vs-CARP generation comparison at the two head-risk thresholds
+  - threshold `0.7`:
+    - `qasper`:
+      - token match rate=`0.75`
+      - first divergence step=`3`
+      - step KLs=`[0.0000, 0.0091, 0.0231, 2.5690, 0.0823, 0.0200, 0.0191, 0.0288]`
+      - mean exact-head fraction=`0.1172`
+    - `multifieldqa_en`:
+      - token match rate=`0.75`
+      - first divergence step=`7`
+      - step KLs=`[0.0000, 0.0768, 0.1708, 0.1136, 0.2549, 0.0318, 0.0763, 6.1349]`
+      - mean exact-head fraction=`0.2292`
+    - `2wikimqa`:
+      - token match rate=`1.00`
+      - no divergence within 8 steps
+      - step KLs=`[0.0000, 0.0010, 0.0000, 0.0000, 0.0112, 0.0585, 0.0303, 0.0170]`
+      - mean exact-head fraction=`0.1927`
+  - threshold `0.8`:
+    - `qasper`:
+      - token match rate=`1.00`
+      - no divergence within 8 steps
+      - step KLs=`[0.0000, 0.0529, 0.1239, 0.1093, 0.0213, 0.1222, 0.0531, 0.0284]`
+      - mean exact-head fraction=`0.0208`
+    - `multifieldqa_en`:
+      - token match rate=`0.375`
+      - first divergence step=`4`
+      - step KLs=`[0.0000, 0.2278, 0.1422, 0.1696, 10.9591, 2.9714, 10.2524, 4.0927]`
+      - mean exact-head fraction=`0.0078`
+    - `2wikimqa`:
+      - token match rate=`0.875`
+      - first divergence step=`6`
+      - step KLs=`[0.0000, 0.0013, 0.0014, 0.0007, 0.0986, 5.0880, 0.4790, 0.2805]`
+      - mean exact-head fraction=`0.0052`
+  - interpretation:
+    - error accumulation is not uniformly exponential; some prompts show isolated KL spikes and partial recovery
+    - `0.8` is clearly unstable on hard prompts over multi-step decode
+    - `0.7` is materially safer, but it is still not uniformly flat: `qasper` shows a mid-sequence spike and `multifieldqa_en` still blows up late
+    - the next step should focus on stabilizing late-step head risk rather than only improving first-step KL
+  - output-level comparison against exact 8-step generation:
+    - threshold `0.7`:
+      - macro exact-match=`0.3333`
+      - macro ROUGE-L=`0.7444`
+      - macro edit distance=`3.0`
+      - per-task:
+        - `qasper`: EM=`0.0`, ROUGE-L=`0.8333`
+        - `multifieldqa_en`: EM=`0.0`, ROUGE-L=`0.4000`
+        - `2wikimqa`: EM=`1.0`, ROUGE-L=`1.0000`
+    - threshold `0.8`:
+      - macro exact-match=`0.3333`
+      - macro ROUGE-L=`0.5556`
+      - macro edit distance=`4.67`
+      - per-task:
+        - `qasper`: EM=`1.0`, ROUGE-L=`1.0000`
+        - `multifieldqa_en`: EM=`0.0`, ROUGE-L=`0.0000`
+        - `2wikimqa`: EM=`0.0`, ROUGE-L=`0.6667`
+  - conclusion:
+    - evaluating the generated text directly confirms the same ranking as the KL traces: `0.7` is the better operating point, but it is still not good enough to call the multi-step path solved
+## 2026-03-26 09:20:00
+- Notes: carp_kv_8step_entropy_exact_step_fallback
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Samples/task: 1
+- Decode steps: 8
+- Fallback rule:
+  - use the CARP path by default
+  - if normalized output-logit entropy exceeds `0.2`, replace that step's CARP logits with exact logits
+- Finding:
+  - threshold `0.8` base + entropy fallback:
+    - `qasper`: hybrid EM=`1.0`, ROUGE-L=`1.0000`, fallback rate=`0.625`
+    - `multifieldqa_en`: hybrid EM=`1.0`, ROUGE-L=`1.0000`, fallback rate=`0.875`
+    - `2wikimqa`: hybrid EM=`0.0`, ROUGE-L=`0.6667`, fallback rate=`0.0`
+    - macro hybrid EM=`0.6667`
+    - macro hybrid ROUGE-L=`0.8889`
+  - threshold `0.7` base + entropy fallback:
+    - `qasper`: hybrid EM=`1.0`, ROUGE-L=`1.0000`, fallback rate=`0.625`
+    - `multifieldqa_en`: hybrid EM=`1.0`, ROUGE-L=`1.0000`, fallback rate=`0.875`
+    - `2wikimqa`: hybrid EM=`1.0`, ROUGE-L=`1.0000`, fallback rate=`0.0`
+    - macro hybrid EM=`1.0000`
+    - macro hybrid ROUGE-L=`1.0000`
+  - interpretation:
+    - the query-level intervention is the first patch that fixes the actual multi-step failure mode
+    - entropy fallback rescues the uncertainty-driven failures (`qasper`, `multifieldqa_en`)
+    - `2wikimqa` already had low output entropy under the `0.7` base and did not need fallback
+    - `2wikimqa` still fails under the cheaper `0.8` base because its divergence happens while the model remains confident, so entropy gating alone cannot save the weak base
+  - next step:
+    - treat `0.7` + entropy fallback as the current best multi-step operating point
+    - sweep the entropy threshold to reduce fallback rate while preserving the `3/3` exact-match result
+## 2026-03-26 12:05:00
+- Notes: carp_kv_entropy_threshold_sweep
+- Base setting:
+  - exact-head threshold=`0.7`
+  - entropy fallback active
+- Decode steps: 8
+- Tasks: qasper, multifieldqa_en, 2wikimqa
+- Finding:
+  - entropy threshold `0.25`:
+    - preserved the same `3/3` exact-generation result as `0.20`
+    - fallback rates:
+      - `qasper`=`0.625`
+      - `multifieldqa_en`=`0.875`
+      - `2wikimqa`=`0.0`
+    - mean fallback rate=`0.5000`
+  - entropy threshold `0.30`:
+    - still preserved the same `3/3` exact-generation result
+    - fallback rates:
+      - `qasper`=`0.625`
+      - `multifieldqa_en`=`0.750`
+      - `2wikimqa`=`0.0`
+    - mean fallback rate=`0.4583`
+    - macro hybrid EM=`1.0000`
+    - macro hybrid ROUGE-L=`1.0000`
+  - interpretation:
+    - the entropy gate has slack above `0.20`
+    - `0.30` is currently the best verified threshold because it preserves the exact 3-task result while reducing exact-step usage
+    - the remaining cost is still concentrated in `qasper` and `multifieldqa_en`; `2wikimqa` needs no entropy fallback at all under the `0.7` base
+## 2026-03-26 13:00:00
+- Notes: longbench_gold_answer_check_for_8step_proxy
+- Finding:
+  - I ran the missing gold-answer scoring pass on the saved 8-step outputs using the real LongBench `score_prediction()` metric from [longbench_subset_eval.py](/Users/pranav/Documents/New%20project/longbench_subset_eval.py).
+  - result:
+    - exact 8-step continuation: macro task score=`0.0`
+    - CARP 8-step continuation: macro task score=`0.0`
+    - `0.7` + entropy `0.30` hybrid 8-step continuation: macro task score=`0.0`
+  - interpretation:
+    - the 8-step proxy is useful for studying generation stability and divergence
+    - it is NOT a valid task-level LongBench metric on these samples, because 8 generated tokens do not contain complete answers
+    - any real task-level comparison now requires full-answer generation, not short continuation scoring

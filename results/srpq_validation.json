@@ -1,0 +1,42 @@
+{
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "tasks": [
+    "qasper",
+    "multifieldqa_en",
+    "2wikimqa"
+  ],
+  "rank": 16,
+  "thresholds": {
+    "tau_high": 0.3,
+    "tau_low": 0.1
+  },
+  "polar_quant_high": {
+    "name": "polar_quant_high",
+    "reconstruction_mse": 0.16658446192741394,
+    "mean_relative_l2": 0.17271754145622253,
+    "score_rmse": 5.022239685058594,
+    "mean_abs_score_error": 3.890042781829834,
+    "mean_relative_score_error": 0.1957777294613648,
+    "top1_containment": 0.51171875,
+    "top1_agreement": 0.51171875,
+    "top8_containment": 0.94921875,
+    "top16_containment": 0.9921875,
+    "approx_bits_per_coord": 3.78125
+  },
+  "srpq": {
+    "name": "srpq",
+    "reconstruction_mse": 0.35086342692375183,
+    "mean_relative_l2": 0.21728172898292542,
+    "score_rmse": 7.312725067138672,
+    "mean_abs_score_error": 5.133283615112305,
+    "mean_relative_score_error": 0.25834744428573625,
+    "top1_containment": 0.4609375,
+    "top1_agreement": 0.4609375,
+    "top8_containment": 0.8359375,
+    "top16_containment": 0.88671875,
+    "estimated_bits_per_key_token": 225.5,
+    "innovation_fraction": 0.1181640625,
+    "moderate_fraction": 0.7646484375,
+    "background_fraction": 0.1171875
+  }
+}

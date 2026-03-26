@@ -1,0 +1,1003 @@
+{
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "tasks": [
+    "qasper",
+    "multifieldqa_en",
+    "2wikimqa"
+  ],
+  "samples_per_task": 5,
+  "carp": {
+    "base_fraction": 0.02001953125,
+    "max_fraction": 0.15,
+    "risk_tau": 2.0,
+    "risk_lambda": 0.5,
+    "risk_gamma": 1.0,
+    "risk_beta": 1.0,
+    "anchor_ratio": 0.25,
+    "exact_fraction": 0.0,
+    "exact_head_risk_threshold": 0.7,
+    "low_bits": [
+      4,
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "high_bits": [
+      4,
+      4,
+      3,
+      3,
+      2,
+      2
+    ]
+  },
+  "records": [
+    {
+      "task": "qasper",
+      "item_id": "43ffd7775c3b4a541e227c120bffcc7c7b31fb184ba94d69",
+      "baseline": {
+        "first_token_id": 323,
+        "first_token_text": " and",
+        "second_top1_id": 40135,
+        "second_top1_text": " Xia",
+        "second_top5_ids": [
+          40135,
+          809,
+          1863,
+          619,
+          1599
+        ],
+        "second_top5_text": [
+          " Xia",
+          " Y",
+          " Z",
+          " J",
+          " X"
+        ]
+      },
+      "carp": {
+        "first_token_id": 323,
+        "first_token_text": " and",
+        "second_top1_id": 40135,
+        "second_top1_text": " Xia",
+        "second_top5_ids": [
+          40135,
+          809,
+          619,
+          1863,
+          1599
+        ],
+        "second_top5_text": [
+          " Xia",
+          " Y",
+          " J",
+          " Z",
+          " X"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.19277901481837034,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6215875955919424,
+          "max_risk": 0.8112008571624756,
+          "mean_margin": 0.8018602679173151,
+          "min_margin": 0.01712656021118164,
+          "mean_entropy": 0.8758864750464758,
+          "max_entropy": 0.9356459975242615,
+          "mean_disagreement": 0.4739583333333333,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.10416666666666667,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.10416666666666667
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.009061252245382845
+    },
+    {
+      "task": "qasper",
+      "item_id": "188fe9331293312465b4564e11ab36dfbcb37191e62a969c",
+      "baseline": {
+        "first_token_id": 3822,
+        "first_token_text": " University",
+        "second_top1_id": 2885,
+        "second_top1_text": " Data",
+        "second_top5_ids": [
+          2885,
+          17407,
+          8319,
+          594,
+          15235
+        ],
+        "second_top5_text": [
+          " Data",
+          " Computer",
+          " Research",
+          "'s",
+          " AI"
+        ]
+      },
+      "carp": {
+        "first_token_id": 3822,
+        "first_token_text": " University",
+        "second_top1_id": 2885,
+        "second_top1_text": " Data",
+        "second_top5_ids": [
+          2885,
+          8319,
+          17407,
+          58194,
+          15235
+        ],
+        "second_top5_text": [
+          " Data",
+          " Research",
+          " Computer",
+          " Artificial",
+          " AI"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.2668094707963367,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6240960819025835,
+          "max_risk": 0.8035578727722168,
+          "mean_margin": 0.7773595849672953,
+          "min_margin": 0.012113809585571289,
+          "mean_entropy": 0.8773998133838177,
+          "max_entropy": 0.934836745262146,
+          "mean_disagreement": 0.4739583333333333,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.1875,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.1875
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.051778122933463636
+    },
+    {
+      "task": "qasper",
+      "item_id": "4f1d5a7b6c42269c845959f8a8d7ef95cb7e0c122c9a721c",
+      "baseline": {
+        "first_token_id": 3822,
+        "first_token_text": " University",
+        "second_top1_id": 2885,
+        "second_top1_text": " Data",
+        "second_top5_ids": [
+          2885,
+          17407,
+          8319,
+          594,
+          15235
+        ],
+        "second_top5_text": [
+          " Data",
+          " Computer",
+          " Research",
+          "'s",
+          " AI"
+        ]
+      },
+      "carp": {
+        "first_token_id": 3822,
+        "first_token_text": " University",
+        "second_top1_id": 2885,
+        "second_top1_text": " Data",
+        "second_top5_ids": [
+          2885,
+          8319,
+          17407,
+          58194,
+          15235
+        ],
+        "second_top5_text": [
+          " Data",
+          " Research",
+          " Computer",
+          " Artificial",
+          " AI"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.2668094707963367,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6240960819025835,
+          "max_risk": 0.8035578727722168,
+          "mean_margin": 0.7773595849672953,
+          "min_margin": 0.012113809585571289,
+          "mean_entropy": 0.8773998133838177,
+          "max_entropy": 0.934836745262146,
+          "mean_disagreement": 0.4739583333333333,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.1875,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.1875
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.051778122933463636
+    },
+    {
+      "task": "qasper",
+      "item_id": "6a78dbe4f8e30d35c13ea1f80e52df286f9e1f664f9c3d98",
+      "baseline": {
+        "first_token_id": 83187,
+        "first_token_text": " synt",
+        "second_top1_id": 23170,
+        "second_top1_text": "actic",
+        "second_top5_ids": [
+          23170,
+          531,
+          36019,
+          774,
+          351
+        ],
+        "second_top5_text": [
+          "actic",
+          "act",
+          "actical",
+          "atic",
+          "ag"
+        ]
+      },
+      "carp": {
+        "first_token_id": 83187,
+        "first_token_text": " synt",
+        "second_top1_id": 23170,
+        "second_top1_text": "actic",
+        "second_top5_ids": [
+          23170,
+          531,
+          36019,
+          774,
+          31248
+        ],
+        "second_top5_text": [
+          "actic",
+          "act",
+          "actical",
+          "atic",
+          "lical"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.24852900144954523,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6253190009544293,
+          "max_risk": 0.8035007119178772,
+          "mean_margin": 0.7383468697468439,
+          "min_margin": 0.012511014938354492,
+          "mean_entropy": 0.8843478399018446,
+          "max_entropy": 0.9410009384155273,
+          "mean_disagreement": 0.4557291666666667,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.16666666666666666,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.16666666666666666
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.02750004759205498
+    },
+    {
+      "task": "qasper",
+      "item_id": "3dd2d62c046f3b559c34003f570ed35211000500b8f0145f",
+      "baseline": {
+        "first_token_id": 279,
+        "first_token_text": " the",
+        "second_top1_id": 1616,
+        "second_top1_text": " way",
+        "second_top5_ids": [
+          1616,
+          975,
+          3681,
+          5486,
+          1714
+        ],
+        "second_top5_text": [
+          " way",
+          " work",
+          " previous",
+          " approach",
+          " method"
+        ]
+      },
+      "carp": {
+        "first_token_id": 279,
+        "first_token_text": " the",
+        "second_top1_id": 1616,
+        "second_top1_text": " way",
+        "second_top5_ids": [
+          1616,
+          975,
+          3681,
+          1714,
+          5486
+        ],
+        "second_top5_text": [
+          " way",
+          " work",
+          " previous",
+          " method",
+          " approach"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.2877244677705069,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.642808253566424,
+          "max_risk": 0.7919109463691711,
+          "mean_margin": 0.8133650223414103,
+          "min_margin": 0.013519287109375,
+          "mean_entropy": 0.8987396198014418,
+          "max_entropy": 0.9364847540855408,
+          "mean_disagreement": 0.5598958333333334,
+          "max_disagreement": 0.875,
+          "mean_exact_fraction": 0.20833333333333334,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.20833333333333334
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.03448091714872845
+    },
+    {
+      "task": "multifieldqa_en",
+      "item_id": "c6eba7d0323b89bbdb0fbad233543848add08dcbfcbd875b",
+      "baseline": {
+        "first_token_id": 37287,
+        "first_token_text": "olang",
+        "second_top1_id": 8749,
+        "second_top1_text": "/bin",
+        "second_top5_ids": [
+          8749,
+          14,
+          198,
+          4846,
+          5894
+        ],
+        "second_top5_text": [
+          "/bin",
+          "/",
+          "\n",
+          "/g",
+          "/\n"
+        ]
+      },
+      "carp": {
+        "first_token_id": 37287,
+        "first_token_text": "olang",
+        "second_top1_id": 8749,
+        "second_top1_text": "/bin",
+        "second_top5_ids": [
+          8749,
+          14,
+          198,
+          4846,
+          25525
+        ],
+        "second_top5_text": [
+          "/bin",
+          "/",
+          "\n",
+          "/g",
+          "/go"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.30735557976489264,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6507642244299253,
+          "max_risk": 0.8103671073913574,
+          "mean_margin": 0.6362729022900263,
+          "min_margin": 0.006018161773681641,
+          "mean_entropy": 0.888481459269921,
+          "max_entropy": 0.9282112121582031,
+          "mean_disagreement": 0.5104166666666666,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.22916666666666666,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.22916666666666666
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.07678596661310512
+    },
+    {
+      "task": "multifieldqa_en",
+      "item_id": "22034e095a602824678c4028e6f605919ce520270dc06089",
+      "baseline": {
+        "first_token_id": 315,
+        "first_token_text": " of",
+        "second_top1_id": 279,
+        "second_top1_text": " the",
+        "second_top5_ids": [
+          279,
+          400,
+          5080,
+          506,
+          458
+        ],
+        "second_top5_text": [
+          " the",
+          " $",
+          " higher",
+          " O",
+          " an"
+        ]
+      },
+      "carp": {
+        "first_token_id": 315,
+        "first_token_text": " of",
+        "second_top1_id": 279,
+        "second_top1_text": " the",
+        "second_top5_ids": [
+          279,
+          400,
+          5080,
+          506,
+          1973
+        ],
+        "second_top5_text": [
+          " the",
+          " $",
+          " higher",
+          " O",
+          " order"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.28706941722581786,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6406627371907234,
+          "max_risk": 0.8092589974403381,
+          "mean_margin": 0.7212751458088557,
+          "min_margin": 0.03032708168029785,
+          "mean_entropy": 0.9062697800497214,
+          "max_entropy": 0.9485279321670532,
+          "mean_disagreement": 0.5052083333333334,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.20833333333333334,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.20833333333333334
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.051512806794334766
+    },
+    {
+      "task": "multifieldqa_en",
+      "item_id": "322b4b2b074049aac101086797d655a21671ef5a9f366353",
+      "baseline": {
+        "first_token_id": 315,
+        "first_token_text": " of",
+        "second_top1_id": 279,
+        "second_top1_text": " the",
+        "second_top5_ids": [
+          279,
+          400,
+          5080,
+          506,
+          458
+        ],
+        "second_top5_text": [
+          " the",
+          " $",
+          " higher",
+          " O",
+          " an"
+        ]
+      },
+      "carp": {
+        "first_token_id": 315,
+        "first_token_text": " of",
+        "second_top1_id": 279,
+        "second_top1_text": " the",
+        "second_top5_ids": [
+          279,
+          400,
+          5080,
+          506,
+          1973
+        ],
+        "second_top5_text": [
+          " the",
+          " $",
+          " higher",
+          " O",
+          " order"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.28706941722581786,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6406627371907234,
+          "max_risk": 0.8092589974403381,
+          "mean_margin": 0.7212751458088557,
+          "min_margin": 0.03032708168029785,
+          "mean_entropy": 0.9062697800497214,
+          "max_entropy": 0.9485279321670532,
+          "mean_disagreement": 0.5052083333333334,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.20833333333333334,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.20833333333333334
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.051512806794334766
+    },
+    {
+      "task": "multifieldqa_en",
+      "item_id": "ec016e90ac78727f3c4aa176db472724bda53c07cb8cb696",
+      "baseline": {
+        "first_token_id": 62,
+        "first_token_text": "_",
+        "second_top1_id": 16,
+        "second_top1_text": "1",
+        "second_top5_ids": [
+          16,
+          17,
+          20,
+          18,
+          15
+        ],
+        "second_top5_text": [
+          "1",
+          "2",
+          "5",
+          "3",
+          "0"
+        ]
+      },
+      "carp": {
+        "first_token_id": 62,
+        "first_token_text": "_",
+        "second_top1_id": 16,
+        "second_top1_text": "1",
+        "second_top5_ids": [
+          16,
+          17,
+          20,
+          18,
+          15
+        ],
+        "second_top5_text": [
+          "1",
+          "2",
+          "5",
+          "3",
+          "0"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.36212264668817323,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6480984004835287,
+          "max_risk": 0.8094697594642639,
+          "mean_margin": 0.623762679596742,
+          "min_margin": 0.011047720909118652,
+          "mean_entropy": 0.8949940303961436,
+          "max_entropy": 0.9515233039855957,
+          "mean_disagreement": 0.4921875,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.2916666666666667,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.2916666666666667
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.048450003704973175
+    },
+    {
+      "task": "multifieldqa_en",
+      "item_id": "d5422b0fdbed42c0f1d2213edb6c7637802452e4ca7287eb",
+      "baseline": {
+        "first_token_id": 17,
+        "first_token_text": "2",
+        "second_top1_id": 15,
+        "second_top1_text": "0",
+        "second_top5_ids": [
+          15,
+          16,
+          17,
+          18,
+          11
+        ],
+        "second_top5_text": [
+          "0",
+          "1",
+          "2",
+          "3",
+          ","
+        ]
+      },
+      "carp": {
+        "first_token_id": 17,
+        "first_token_text": "2",
+        "second_top1_id": 15,
+        "second_top1_text": "0",
+        "second_top5_ids": [
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "second_top5_text": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.2114367694593966,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.621242561067144,
+          "max_risk": 0.7812057137489319,
+          "mean_margin": 0.736755574742953,
+          "min_margin": 0.009444236755371094,
+          "mean_entropy": 0.877354965855678,
+          "max_entropy": 0.9299899339675903,
+          "mean_disagreement": 0.4375,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.125,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.125
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 6.459224207055347e-05
+    },
+    {
+      "task": "2wikimqa",
+      "item_id": "cc32d31bbeb3e0d8787e963cf0843ae6b22f33817eb5a587",
+      "baseline": {
+        "first_token_id": 279,
+        "first_token_text": " the",
+        "second_top1_id": 220,
+        "second_top1_text": " ",
+        "second_top5_ids": [
+          220,
+          43602,
+          5535,
+          6058,
+          7042
+        ],
+        "second_top5_text": [
+          " ",
+          " census",
+          " latest",
+          " January",
+          " population"
+        ]
+      },
+      "carp": {
+        "first_token_id": 279,
+        "first_token_text": " the",
+        "second_top1_id": 220,
+        "second_top1_text": " ",
+        "second_top5_ids": [
+          220,
+          43602,
+          882,
+          7042,
+          5535
+        ],
+        "second_top5_text": [
+          " ",
+          " census",
+          " time",
+          " population",
+          " latest"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.32470491901040077,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6417946387082338,
+          "max_risk": 0.8104506731033325,
+          "mean_margin": 0.8087055534124374,
+          "min_margin": 0.0005197525024414062,
+          "mean_entropy": 0.884857622285684,
+          "max_entropy": 0.9418582916259766,
+          "mean_disagreement": 0.5598958333333334,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.25,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.25
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.0010379876762156696
+    },
+    {
+      "task": "2wikimqa",
+      "item_id": "0c43156b7d6bc17425a89dc6c6d48fc8c2c72ac9eba55a87",
+      "baseline": {
+        "first_token_id": 22,
+        "first_token_text": "7",
+        "second_top1_id": 13,
+        "second_top1_text": ".",
+        "second_top5_ids": [
+          13,
+          9497,
+          8756,
+          296,
+          26062
+        ],
+        "second_top5_text": [
+          ".",
+          " mi",
+          " miles",
+          " m",
+          "\u00bd"
+        ]
+      },
+      "carp": {
+        "first_token_id": 22,
+        "first_token_text": "7",
+        "second_top1_id": 13,
+        "second_top1_text": ".",
+        "second_top5_ids": [
+          13,
+          9497,
+          8756,
+          23,
+          24
+        ],
+        "second_top5_text": [
+          ".",
+          " mi",
+          " miles",
+          "8",
+          "9"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.26695548308392364,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6256441883742809,
+          "max_risk": 0.8077028393745422,
+          "mean_margin": 0.7652979617317518,
+          "min_margin": 0.05330300331115723,
+          "mean_entropy": 0.8782914765179157,
+          "max_entropy": 0.9436445832252502,
+          "mean_disagreement": 0.4739583333333333,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.1875,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.1875
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.002689344021488788
+    },
+    {
+      "task": "2wikimqa",
+      "item_id": "2df722c08f52cbf987c84019f7f2e5455cd29992738441cc",
+      "baseline": {
+        "first_token_id": 10942,
+        "first_token_text": " District",
+        "second_top1_id": 11,
+        "second_top1_text": ",",
+        "second_top5_ids": [
+          13,
+          11,
+          624,
+          382,
+          323
+        ],
+        "second_top5_text": [
+          ".",
+          ",",
+          ".\n",
+          ".\n\n",
+          " and"
+        ]
+      },
+      "carp": {
+        "first_token_id": 10942,
+        "first_token_text": " District",
+        "second_top1_id": 11,
+        "second_top1_text": ",",
+        "second_top5_ids": [
+          11,
+          13,
+          624,
+          382,
+          323
+        ],
+        "second_top5_text": [
+          ",",
+          ".",
+          ".\n",
+          ".\n\n",
+          " and"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.2890274746653934,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6529987516502539,
+          "max_risk": 0.8013519048690796,
+          "mean_margin": 0.6139610211054484,
+          "min_margin": 0.03488588333129883,
+          "mean_entropy": 0.9025656071801981,
+          "max_entropy": 0.9398927688598633,
+          "mean_disagreement": 0.5,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.20833333333333334,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.20833333333333334
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.055516439298862116
+    },
+    {
+      "task": "2wikimqa",
+      "item_id": "2c605656720054b6c9e6e0f15f99c1b4675db67e6e098cee",
+      "baseline": {
+        "first_token_id": 45111,
+        "first_token_text": " Mend",
+        "second_top1_id": 509,
+        "second_top1_text": "oc",
+        "second_top5_ids": [
+          509,
+          263,
+          5131,
+          3955,
+          14128
+        ],
+        "second_top5_text": [
+          "oc",
+          "on",
+          "ox",
+          "ico",
+          "ocs"
+        ]
+      },
+      "carp": {
+        "first_token_id": 45111,
+        "first_token_text": " Mend",
+        "second_top1_id": 509,
+        "second_top1_text": "oc",
+        "second_top5_ids": [
+          509,
+          263,
+          5131,
+          3955,
+          14128
+        ],
+        "second_top5_text": [
+          "oc",
+          "on",
+          "ox",
+          "ico",
+          "ocs"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.3227268699556589,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.630246584614118,
+          "max_risk": 0.8102379441261292,
+          "mean_margin": 0.8107411290208498,
+          "min_margin": 0.0027375221252441406,
+          "mean_entropy": 0.8781654189030329,
+          "max_entropy": 0.942145824432373,
+          "mean_disagreement": 0.5208333333333334,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.25,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.25
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 5.551342492514419e-06
+    },
+    {
+      "task": "2wikimqa",
+      "item_id": "8720ebfc91b6860392a2b7b0ba954b0cd16ffd8c360a1f2b",
+      "baseline": {
+        "first_token_id": 320,
+        "first_token_text": " (",
+        "second_top1_id": 17,
+        "second_top1_text": "2",
+        "second_top5_ids": [
+          17,
+          16,
+          84336,
+          27523,
+          37
+        ],
+        "second_top5_text": [
+          "2",
+          "1",
+          "football",
+          "March",
+          "F"
+        ]
+      },
+      "carp": {
+        "first_token_id": 320,
+        "first_token_text": " (",
+        "second_top1_id": 17,
+        "second_top1_text": "2",
+        "second_top5_ids": [
+          17,
+          84336,
+          16,
+          47707,
+          86323
+        ],
+        "second_top5_text": [
+          "2",
+          "football",
+          "1",
+          "Russian",
+          "Football"
+        ],
+        "cache_stats": {
+          "mean_budget_fraction": 0.36385256502156454,
+          "max_budget_fraction": 1.0,
+          "mean_risk": 0.6609300933778286,
+          "max_risk": 0.7826350331306458,
+          "mean_margin": 0.6323829938968023,
+          "min_margin": 0.0040035247802734375,
+          "mean_entropy": 0.8882445991039276,
+          "max_entropy": 0.9412280917167664,
+          "mean_disagreement": 0.5520833333333334,
+          "max_disagreement": 1.0,
+          "mean_exact_fraction": 0.2916666666666667,
+          "max_exact_fraction": 1.0,
+          "mean_exact_head_fraction": 0.2916666666666667
+        }
+      },
+      "first_token_match": true,
+      "second_top1_match": true,
+      "second_top1_in_carp_top5": true,
+      "second_step_kl": 0.1491984942865217
+    }
+  ],
+  "summary": {
+    "qasper": {
+      "first_token_match": 1.0,
+      "second_top1_match": 1.0,
+      "second_top1_in_carp_top5": 1.0,
+      "second_step_kl": 0.03491969257061871
+    },
+    "multifieldqa_en": {
+      "first_token_match": 1.0,
+      "second_top1_match": 1.0,
+      "second_top1_in_carp_top5": 1.0,
+      "second_step_kl": 0.04566523522976368
+    },
+    "2wikimqa": {
+      "first_token_match": 1.0,
+      "second_top1_match": 1.0,
+      "second_top1_in_carp_top5": 1.0,
+      "second_step_kl": 0.041689563325116155
+    }
+  }
+}

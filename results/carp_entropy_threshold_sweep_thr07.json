@@ -1,0 +1,102 @@
+{
+  "0.22": {
+    "records": [
+      {
+        "task": "qasper",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.625
+      },
+      {
+        "task": "multifieldqa_en",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.875
+      },
+      {
+        "task": "2wikimqa",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.0
+      }
+    ],
+    "macro_em": 1.0,
+    "macro_rouge_l": 1.0,
+    "mean_fallback_rate": 0.5
+  },
+  "0.25": {
+    "records": [
+      {
+        "task": "qasper",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.625
+      },
+      {
+        "task": "multifieldqa_en",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.875
+      },
+      {
+        "task": "2wikimqa",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.0
+      }
+    ],
+    "macro_em": 1.0,
+    "macro_rouge_l": 1.0,
+    "mean_fallback_rate": 0.5
+  },
+  "0.28": {
+    "records": [
+      {
+        "task": "qasper",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.625
+      },
+      {
+        "task": "multifieldqa_en",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.75
+      },
+      {
+        "task": "2wikimqa",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.0
+      }
+    ],
+    "macro_em": 1.0,
+    "macro_rouge_l": 1.0,
+    "mean_fallback_rate": 0.4583333333333333
+  },
+  "0.3": {
+    "records": [
+      {
+        "task": "qasper",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.625
+      },
+      {
+        "task": "multifieldqa_en",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.75
+      },
+      {
+        "task": "2wikimqa",
+        "em": 1.0,
+        "rouge_l": 1.0,
+        "fallback_rate": 0.0
+      }
+    ],
+    "macro_em": 1.0,
+    "macro_rouge_l": 1.0,
+    "mean_fallback_rate": 0.4583333333333333
+  }
+}
