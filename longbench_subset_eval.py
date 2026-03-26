@@ -50,7 +50,23 @@ except Exception:
     BM25Okapi = None
 
 
-LONG_BENCH_ROOT = Path(__file__).resolve().parent / "LongBenchRepo" / "LongBench"
+def resolve_longbench_root() -> Path:
+    repo_root = Path(__file__).resolve().parent / "LongBenchRepo"
+    candidates = [
+        repo_root / "LongBench",
+        repo_root,
+    ]
+    for candidate in candidates:
+        if (candidate / "data").exists() and (candidate / "config").exists():
+            return candidate
+    raise FileNotFoundError(
+        "Could not find LongBench data/config under either "
+        f"{repo_root / 'LongBench'} or {repo_root}. "
+        "Clone the LongBench repo into `LongBenchRepo`."
+    )
+
+
+LONG_BENCH_ROOT = resolve_longbench_root()
 LONG_BENCH_DATA_DIR = LONG_BENCH_ROOT / "data"
 LONG_BENCH_CONFIG_DIR = LONG_BENCH_ROOT / "config"
 LONG_BENCH_JSONL_LOG = RESULTS_DIR / "longbench_subset_log.jsonl"

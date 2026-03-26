@@ -20,7 +20,23 @@ from main import HF_QWEN_SMALL
 from polar_quant import RecursivePolarQuantizer, randomized_hadamard_matrix
 
 
-LONG_BENCH_DATA_DIR = Path(__file__).resolve().parent / "LongBenchRepo" / "LongBench" / "data"
+def resolve_longbench_data_dir() -> Path:
+    repo_root = Path(__file__).resolve().parent / "LongBenchRepo"
+    candidates = [
+        repo_root / "LongBench" / "data",
+        repo_root / "data",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(
+        "Could not find LongBench data under either "
+        f"{repo_root / 'LongBench' / 'data'} or {repo_root / 'data'}. "
+        "Clone the LongBench repo into `LongBenchRepo`."
+    )
+
+
+LONG_BENCH_DATA_DIR = resolve_longbench_data_dir()
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
 
