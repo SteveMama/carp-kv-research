@@ -7,13 +7,16 @@ import shutil
 import shlex
 import subprocess
 import sys
+import tempfile
+from urllib.request import urlretrieve
+import zipfile
 
 
 REPO_ROOT = Path(__file__).resolve().parent
 LONG_BENCH_REPO = REPO_ROOT / "LongBenchRepo"
 VENV_DIR = REPO_ROOT / ".venv-colab"
-VENV_PYTHON = VENV_DIR / "bin" / "python"
 DEFAULT_TASKS = ["qasper", "multifieldqa_en", "2wikimqa"]
+LONGBENCH_DATA_ZIP_URL = "https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data.zip"
 
 
 def run(cmd: list[str], cwd: Path | None = None) -> None:
@@ -27,15 +30,45 @@ def maybe_set_hf_token(token: str) -> None:
         print("HF token set")
 
 
-def longbench_layout_valid(repo_root: Path) -> bool:
+def resolve_venv_python() -> Path | None:
+    candidates = [
+        VENV_DIR / "bin" / "python",
+        VENV_DIR / "bin" / "python3",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def resolve_longbench_base(repo_root: Path) -> Path:
     candidates = [
         repo_root / "LongBench",
         repo_root,
     ]
     for candidate in candidates:
-        if (candidate / "data").exists() and (candidate / "config").exists():
-            return True
-    return False
+        if (candidate / "config").exists():
+            return candidate
+    return repo_root / "LongBench" if (repo_root / "LongBench").exists() else repo_root
+
+
+def longbench_layout_valid(repo_root: Path) -> bool:
+    base = resolve_longbench_base(repo_root)
+    return (base / "config").exists() and (base / "data").exists() and any((base / "data").glob("*.jsonl"))
+
+
+def download_longbench_data(repo_root: Path) -> None:
+    base = resolve_longbench_base(repo_root)
+    if not (base / "config").exists():
+        raise RuntimeError(f"LongBench config directory missing under {base}")
+    data_dir = base / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        archive = Path(tmpdir) / "data.zip"
+        print(f"Downloading LongBench data archive from {LONGBENCH_DATA_ZIP_URL}")
+        urlretrieve(LONGBENCH_DATA_ZIP_URL, archive)
+        with zipfile.ZipFile(archive, "r") as zf:
+            zf.extractall(base)
 
 
 def ensure_longbench() -> None:
@@ -47,6 +80,8 @@ def ensure_longbench() -> None:
         shutil.rmtree(LONG_BENCH_REPO)
     run(["git", "clone", "https://github.com/THUDM/LongBench.git", str(LONG_BENCH_REPO)])
     if not longbench_layout_valid(LONG_BENCH_REPO):
+        download_longbench_data(LONG_BENCH_REPO)
+    if not longbench_layout_valid(LONG_BENCH_REPO):
         raise RuntimeError(
             f"Cloned LongBench repo but still could not find a valid data/config layout under {LONG_BENCH_REPO}"
         )
@@ -55,10 +90,11 @@ def ensure_longbench() -> None:
 def maybe_reexec_into_venv(command: str) -> None:
     if command == "setup":
         return
-    if not VENV_PYTHON.exists():
+    venv_python = resolve_venv_python()
+    if venv_python is None:
         return
     current = Path(sys.executable).resolve()
-    target = VENV_PYTHON.resolve()
+    target = venv_python.resolve()
     if current == target:
         return
     os.execv(str(target), [str(target), str(Path(__file__).resolve()), *sys.argv[1:]])
@@ -72,10 +108,14 @@ def cmd_setup(args: argparse.Namespace) -> None:
     except Exception:
         print("nvidia-smi unavailable")
 
-    if not VENV_PYTHON.exists():
+    venv_python = resolve_venv_python()
+    if venv_python is None:
         run([sys.executable, "-m", "venv", str(VENV_DIR)])
+        venv_python = resolve_venv_python()
+    if venv_python is None:
+        raise RuntimeError(f"Failed to create a usable virtual environment under {VENV_DIR}")
 
-    pip_base = [str(VENV_PYTHON), "-m", "pip", "install", "-U"]
+    pip_base = [str(venv_python), "-m", "pip", "install", "-U"]
     if args.install_torch:
         run(
             pip_base
@@ -98,7 +138,7 @@ def cmd_setup(args: argparse.Namespace) -> None:
             "scikit-learn",
         ]
     )
-    run([str(VENV_PYTHON), "-V"])
+    run([str(venv_python), "-V"])
     ensure_longbench()
 
 
