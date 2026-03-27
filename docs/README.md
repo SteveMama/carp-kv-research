@@ -4,6 +4,9 @@ This folder contains the narrative and historical material that supports the act
 
 ## Reports
 
+- [`articles/CARP_MEDIUM_ARTICLE.md`](./articles/CARP_MEDIUM_ARTICLE.md)
+  - narrative article version of the project
+  - easier to read than the paper, but still includes the core math and results
 - [`papers/CARP_DIAGNOSTIC_PAPER.md`](./papers/CARP_DIAGNOSTIC_PAPER.md)
   - paper-style write-up of the whole project
   - recommended if you want one complete narrative document
