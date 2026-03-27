@@ -52,23 +52,51 @@ def resolve_longbench_base(repo_root: Path) -> Path:
     return repo_root / "LongBench" if (repo_root / "LongBench").exists() else repo_root
 
 
+def resolve_longbench_bases(repo_root: Path) -> list[Path]:
+    bases: list[Path] = []
+    for candidate in [repo_root / "LongBench", repo_root]:
+        if (candidate / "config").exists() and candidate not in bases:
+            bases.append(candidate)
+    if not bases:
+        fallback = resolve_longbench_base(repo_root)
+        bases.append(fallback)
+    return bases
+
+
 def longbench_layout_valid(repo_root: Path) -> bool:
-    base = resolve_longbench_base(repo_root)
-    return (base / "config").exists() and (base / "data").exists() and any((base / "data").glob("*.jsonl"))
+    for base in resolve_longbench_bases(repo_root):
+        if (base / "config").exists() and (base / "data").exists() and any((base / "data").glob("*.jsonl")):
+            return True
+    return False
 
 
 def download_longbench_data(repo_root: Path) -> None:
-    base = resolve_longbench_base(repo_root)
-    if not (base / "config").exists():
-        raise RuntimeError(f"LongBench config directory missing under {base}")
-    data_dir = base / "data"
-    data_dir.mkdir(parents=True, exist_ok=True)
+    bases = resolve_longbench_bases(repo_root)
+    if not any((base / "config").exists() for base in bases):
+        raise RuntimeError(f"LongBench config directory missing under {repo_root}")
     with tempfile.TemporaryDirectory() as tmpdir:
         archive = Path(tmpdir) / "data.zip"
+        unpack_dir = Path(tmpdir) / "unzipped"
         print(f"Downloading LongBench data archive from {LONGBENCH_DATA_ZIP_URL}")
         urlretrieve(LONGBENCH_DATA_ZIP_URL, archive)
         with zipfile.ZipFile(archive, "r") as zf:
-            zf.extractall(base)
+            zf.extractall(unpack_dir)
+        extracted_data = unpack_dir / "data"
+        if not extracted_data.exists():
+            nested = next((path for path in unpack_dir.rglob("data") if path.is_dir()), None)
+            if nested is None:
+                raise RuntimeError(f"Downloaded LongBench archive but could not locate a data directory under {unpack_dir}")
+            extracted_data = nested
+        jsonl_count = sum(1 for _ in extracted_data.glob("*.jsonl"))
+        if jsonl_count == 0:
+            raise RuntimeError(f"Downloaded LongBench archive but found no *.jsonl files under {extracted_data}")
+        for base in bases:
+            if not (base / "config").exists():
+                continue
+            target = base / "data"
+            target.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(extracted_data, target, dirs_exist_ok=True)
+            print(f"Installed LongBench data into {target} ({jsonl_count} files)")
 
 
 def ensure_longbench() -> None:
