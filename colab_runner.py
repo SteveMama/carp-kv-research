@@ -294,7 +294,7 @@ def build_parser() -> argparse.ArgumentParser:
     setup.add_argument("--install-torch", action="store_true")
     setup.set_defaults(func=cmd_setup)
 
-    profile = sub.add_parser("profile", help="Run the offline Qwen/Llama KV profiler.")
+    profile = sub.add_parser("profile", help="Run the legacy mixed-layer key-only proxy profiler.")
     profile.add_argument("--hf-token", default="")
     profile.add_argument("--model-name", default="Qwen/Qwen2.5-0.5B-Instruct")
     profile.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
@@ -326,7 +326,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     multistep.set_defaults(func=cmd_multistep)
 
-    diagnose = sub.add_parser("diagnose", help="Run same-item vs cross-item codec diagnosis.")
+    diagnose = sub.add_parser("diagnose", help="Run legacy same-item vs cross-item proxy diagnosis.")
     diagnose.add_argument("--hf-token", default="")
     diagnose.add_argument("--model-name", default="Qwen/Qwen2.5-0.5B-Instruct")
     diagnose.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
@@ -341,7 +341,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     diagnose.set_defaults(func=cmd_diagnose)
 
-    realbench = sub.add_parser("realbench", help="Run real same-layer Q/K attention benchmark.")
+    realbench = sub.add_parser("realbench", help="Run the primary real same-layer Q/K attention benchmark.")
     realbench.add_argument("--hf-token", default="")
     realbench.add_argument("--model-name", default="Qwen/Qwen2.5-0.5B-Instruct")
     realbench.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)

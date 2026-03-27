@@ -314,6 +314,12 @@ def main() -> None:
     parser.add_argument("--output", type=str, default=str(RESULTS_DIR / "qwen_polar_profile.json"))
     args = parser.parse_args()
 
+    print(
+        "WARNING: profile_qwen_kv_polar.py is a legacy proxy benchmark. "
+        "It uses held-out key vectors as pseudo-queries and mixes keys across layers. "
+        "Use benchmark_real_qk_attention.py for the primary same-layer real-Q/K evaluation."
+    )
+
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype="auto")
     model.eval()
@@ -534,6 +540,7 @@ def main() -> None:
 
     result = {
         "model_name": args.model_name,
+        "protocol": "legacy_proxy_keys_as_queries_mixed_layers",
         "tasks": args.tasks,
         "samples_per_task": args.samples_per_task,
         "head_dim": head_dim,
@@ -550,6 +557,13 @@ def main() -> None:
             "mean_relative_l2": rel_l2,
         },
         "comparisons": comparisons,
+        "notes": {
+            "warning": (
+                "This script uses held-out key vectors as pseudo-queries and pools keys across layers. "
+                "It should not be treated as the primary codec-quality benchmark once real Q/K benchmarking is available."
+            ),
+            "recommended_replacement": "benchmark_real_qk_attention.py",
+        },
     }
 
     output_path = Path(args.output)

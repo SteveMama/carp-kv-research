@@ -2,11 +2,11 @@
 
 ## 1. Executive Summary
 
-This report documents the full development path of `CARP-KV`, a query-adaptive KV-cache framework built on top of a polar quantization backbone.
+This report documents the full development path of `CARP-KV`, a query-adaptive KV-cache framework initially built on top of a polar quantization backbone.
 
-The core result is:
+The current result is:
 
-- a plain low-bit polar codec is a strong backbone
+- the early offline evidence for a polar backbone came from a legacy proxy benchmark
 - the original low-rank + sparse idea did not work as the primary codec
 - the useful contribution is a **precision-allocation policy**, not a new base geometry
 
@@ -27,13 +27,13 @@ with:
 - head-level exact fallback for risky heads
 - optional entropy-triggered exact-step fallback during autoregressive generation
 
-The strongest offline codec result was:
+The strongest early offline codec result was:
 
 - low polar: `3.3438` bits/coord, `top1=0.6563`
 - high polar: `3.7813` bits/coord, `top1=0.6719`
 - `CARP-KV`: `3.3525` bits/coord, `top1=0.6719`
 
-So offline, `CARP-KV` matched high-polar behavior at almost low-polar cost.
+Those numbers were later traced to a legacy benchmark that used held-out keys as pseudo-queries and mixed keys across layers. They should not be treated as the final codec-quality evidence.
 
 The strongest multi-step local stability result was:
 
@@ -52,6 +52,22 @@ So the local system is **not yet a competitive compression point** against publi
 - the failure taxonomy
 - the correct intervention point
 - the model-scale hypothesis for GPU validation
+- the need to use real same-layer Q/K attention benchmarks instead of mixed-layer key-only proxies
+
+## 1.1 Benchmark Status
+
+The repo now distinguishes between two different offline evaluations:
+
+- `profile_qwen_kv_polar.py`
+  - legacy proxy benchmark
+  - uses held-out key vectors as pseudo-queries
+  - mixes keys across layers
+- `benchmark_real_qk_attention.py`
+  - primary codec benchmark
+  - uses real post-RoPE queries and keys from the same layer and KV head
+  - evaluates causal key prefixes per query position
+
+Future codec claims should be based on the real same-layer Q/K benchmark and on end-to-end cache-path generation tests, not on the legacy proxy alone.
 
 ## 2. Problem Statement
 
