@@ -115,6 +115,7 @@ Do not use these as the primary evidence for codec quality.
 ### Documentation
 
 - [`docs/README.md`](./docs/README.md): documentation map
+- [`docs/papers/CARP_DIAGNOSTIC_PAPER.md`](./docs/papers/CARP_DIAGNOSTIC_PAPER.md): full paper-style write-up of the project
 - [`docs/reports/CARP_TECHNICAL_REPORT.md`](./docs/reports/CARP_TECHNICAL_REPORT.md): full technical report
 - [`LONG_BENCH_EXPERIMENTS.md`](./LONG_BENCH_EXPERIMENTS.md): chronological experiment log used by the scripts
 - [`results/MASTER_RESULTS_LOG.md`](./results/MASTER_RESULTS_LOG.md): compact results ledger

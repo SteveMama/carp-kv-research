@@ -4,6 +4,9 @@ This folder contains the narrative and historical material that supports the act
 
 ## Reports
 
+- [`papers/CARP_DIAGNOSTIC_PAPER.md`](./papers/CARP_DIAGNOSTIC_PAPER.md)
+  - paper-style write-up of the whole project
+  - recommended if you want one complete narrative document
 - [`reports/CARP_TECHNICAL_REPORT.md`](./reports/CARP_TECHNICAL_REPORT.md)
   - full technical write-up
   - includes the failure taxonomy and benchmark correction story
