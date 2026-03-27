@@ -384,18 +384,47 @@ Instead, local instability depends on where the autoregressive trajectory moves 
 
 ## 12. Multi-Step Results and Cost
 
-The strongest local eight-step stability result used:
+An eight-step GPU multistep run was completed for:
 
-- exact-head threshold `0.7`
-- entropy fallback threshold `0.30`
+- base codec: `polar`
+- promoted codec: `high_polar`
+- selector mode: `heuristic`
+- exact-head threshold: `0.7`
+- entropy fallback threshold: `0.30`
 
-This reproduced exact eight-step generation on the small prompt set, but at high effective cost on the `0.5B` model. Using the measured fallback rate:
+Results:
+
+| Task | CARP Token Match | CARP First Divergence | CARP Final KL | Hybrid Token Match | Hybrid First Divergence | Hybrid Final KL | Hybrid Fallback Rate |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `qasper` | 1.00 | none in 8 steps | 0.0330 | 1.00 | none in 8 steps | 0.0000 | 0.50 |
+| `multifieldqa_en` | 0.25 | step 3 | 9.2543 | 0.25 | step 3 | 9.7003 | 0.75 |
+| `2wikimqa` | 1.00 | none in 8 steps | 0.0226 | 1.00 | none in 8 steps | 0.0226 | 0.00 |
+
+This run showed two important things.
+
+First, unlike the short-context second-step cache benchmark, head-level exact fallback was active here:
+
+- `qasper`: mean exact-head fraction `0.1172`
+- `multifieldqa_en`: mean exact-head fraction `0.2292`
+- `2wikimqa`: mean exact-head fraction `0.1797`
+
+So the multistep setting was genuinely using the head-level fallback path.
+
+Second, entropy-triggered exact-step fallback did **not** rescue the hard `multifieldqa_en` prompt. Divergence started at step `3`, and later exact-step fallback could not bring the trajectory back to the exact decode path. This is exactly what the query-trajectory divergence picture predicts: once the first branching token is wrong, later exact attention is exact for the wrong query sequence.
+
+This means the earlier optimistic local result should not be treated as the final multistep conclusion. The stronger updated statement is:
+
+- `polar -> high_polar` can be stable on some prompts
+- it is still brittle on hard prompts in real multistep decoding
+- entropy fallback only helps if it catches the first divergence-causing step
+
+The cost question also remains unfavorable on the `0.5B` model. Using the earlier successful hybrid setting as an upper-bound style reference, the effective rate was:
 
 ```math
 0.4583 \cdot 16.0 + 0.5417 \cdot 5.97 \approx 10.57 \text{ bits/coord}.
 ```
 
-So the multi-step exact-fallback path is useful as a diagnostic and robustness tool, but not yet a compelling compression point on this small model.
+So the multi-step exact-fallback path is still best understood as a diagnostic and robustness tool, not yet a compelling compression point on this small model.
 
 ## 13. CPU vs GPU Lessons
 
@@ -426,6 +455,7 @@ GPU did not simply “confirm the original story.” It corrected it:
 - `CARP-polar` is valid under the right benchmark
 - `q4` is the stronger base codec on this model
 - the strongest cache-path result at `512` tokens is `q4 -> exact`, not `polar -> high_polar`
+- `polar -> high_polar` remains brittle on hard prompts in multistep decoding, even with head-level and entropy-triggered fallback enabled
 
 ## 14. What Failed
 
@@ -447,6 +477,7 @@ What remains strong:
 3. The query-divergence explanation.
 4. `CARP-polar` as a valid low-cost promotion result under the correct benchmark.
 5. `q4 -> exact promoted subset` as the strongest practical cache-path baseline on this model.
+6. The empirical observation that later exact fallback cannot recover once the first divergent token has already changed the query trajectory.
 
 ## 16. Limitations
 
