@@ -60,6 +60,9 @@ class CARPLayer(DynamicLayer):
         high_bits: list[int],
         base_fraction: float,
         max_fraction: float,
+        base_codec: str = "polar",
+        upgrade_codec: str = "high_polar",
+        selector_mode: str = "learned",
         risk_tau: float = 1.0,
         risk_lambda: float = 0.0,
         risk_gamma: float = 1.0,
@@ -80,6 +83,9 @@ class CARPLayer(DynamicLayer):
         self.high_bits = high_bits
         self.base_fraction = base_fraction
         self.max_fraction = max_fraction
+        self.base_codec = base_codec
+        self.upgrade_codec = upgrade_codec
+        self.selector_mode = selector_mode
         self.risk_tau = risk_tau
         self.risk_lambda = risk_lambda
         self.risk_gamma = risk_gamma
@@ -98,6 +104,23 @@ class CARPLayer(DynamicLayer):
         self.last_disagreements: list[float] = []
         self.last_exact_fractions: list[float] = []
         self.last_exact_heads: list[float] = []
+
+    @staticmethod
+    def _row_zscore_torch(scores: torch.Tensor) -> torch.Tensor:
+        mean = scores.mean(dim=1, keepdim=True)
+        std = scores.std(dim=1, keepdim=True).clamp_min(1e-6)
+        return (scores - mean) / std
+
+    def _heuristic_selector_scores(
+        self,
+        low_scores: torch.Tensor,
+        lowrank_scores: torch.Tensor,
+        innovation: torch.Tensor,
+    ) -> torch.Tensor:
+        z_low = self._row_zscore_torch(low_scores)
+        z_lowrank = self._row_zscore_torch(lowrank_scores)
+        innovation_z = (innovation - innovation.mean()) / innovation.std().clamp_min(1e-6)
+        return (0.65 * z_low[0]) + (0.25 * z_lowrank[0]) + (0.10 * innovation_z)
 
     def update(
         self,
@@ -133,22 +156,37 @@ class CARPLayer(DynamicLayer):
             head_query = q_grouped[0, head_idx, 0].to(torch.float32)
             exact_scores = head_query @ head_keys.T
             head_dim = head_keys.shape[-1]
-            signs = randomized_hadamard_matrix(head_dim, seed=self.seed + self.layer_idx * 31 + head_idx, device=head_keys.device)
+            signs = randomized_hadamard_matrix(
+                head_dim,
+                seed=self.seed + self.layer_idx * 31 + head_idx,
+                device=head_keys.device,
+            )
             low_q = RecursivePolarQuantizer(dim=head_dim, bits_per_level=self.low_bits, radius_bits=8)
             high_q = RecursivePolarQuantizer(dim=head_dim, bits_per_level=self.high_bits, radius_bits=8)
 
-            low_codebooks = low_q.fit_codebooks(head_keys, precondition_signs=signs)
-            high_codebooks = high_q.fit_codebooks(head_keys, precondition_signs=signs)
-            low_recon = low_q.dequantize(
-                low_q.quantize(head_keys, low_codebooks, precondition_signs=signs),
-                low_codebooks,
-                precondition_signs=signs,
-            )
-            high_recon = high_q.dequantize(
-                high_q.quantize(head_keys, high_codebooks, precondition_signs=signs),
-                high_codebooks,
-                precondition_signs=signs,
-            )
+            if self.base_codec == "polar":
+                low_codebooks = low_q.fit_codebooks(head_keys, precondition_signs=signs)
+                low_recon = low_q.dequantize(
+                    low_q.quantize(head_keys, low_codebooks, precondition_signs=signs),
+                    low_codebooks,
+                    precondition_signs=signs,
+                )
+            elif self.base_codec == "q4":
+                low_recon = per_channel_q4_reconstruct(head_keys, head_keys)
+            else:
+                raise ValueError(f"Unsupported base codec: {self.base_codec}")
+
+            if self.upgrade_codec == "high_polar":
+                high_codebooks = high_q.fit_codebooks(head_keys, precondition_signs=signs)
+                high_recon = high_q.dequantize(
+                    high_q.quantize(head_keys, high_codebooks, precondition_signs=signs),
+                    high_codebooks,
+                    precondition_signs=signs,
+                )
+            elif self.upgrade_codec == "exact":
+                high_recon = head_keys
+            else:
+                raise ValueError(f"Unsupported upgrade codec: {self.upgrade_codec}")
 
             lowrank_recon = lowrank_sparse_reconstruct(
                 head_keys,
@@ -163,8 +201,13 @@ class CARPLayer(DynamicLayer):
                 head_keys,
                 rank=min(self.spectral_rank, head_keys.shape[-1] - 1),
             )
-            feat = selector_feature_matrix(low_scores, lowrank_scores, innovation)
-            selector_scores = apply_selector_weights(feat, self.selector_weights, self.selector_bias)[0]
+            if self.selector_mode == "learned":
+                feat = selector_feature_matrix(low_scores, lowrank_scores, innovation)
+                selector_scores = apply_selector_weights(feat, self.selector_weights, self.selector_bias)[0]
+            elif self.selector_mode == "heuristic":
+                selector_scores = self._heuristic_selector_scores(low_scores, lowrank_scores, innovation)
+            else:
+                raise ValueError(f"Unsupported selector mode: {self.selector_mode}")
 
             risk, margin, entropy = margin_entropy_risk(low_scores, tau=self.risk_tau, lam=self.risk_lambda)
             topk_for_disagreement = min(8, head_keys.shape[0])
@@ -261,6 +304,9 @@ class CARPCache(Cache):
         high_bits: list[int],
         base_fraction: float,
         max_fraction: float,
+        base_codec: str,
+        upgrade_codec: str,
+        selector_mode: str,
         risk_tau: float,
         risk_lambda: float,
         risk_gamma: float,
@@ -278,6 +324,9 @@ class CARPCache(Cache):
                 high_bits=high_bits,
                 base_fraction=base_fraction,
                 max_fraction=max_fraction,
+                base_codec=base_codec,
+                upgrade_codec=upgrade_codec,
+                selector_mode=selector_mode,
                 risk_tau=risk_tau,
                 risk_lambda=risk_lambda,
                 risk_gamma=risk_gamma,
@@ -397,6 +446,9 @@ def second_step_decode(model, tokenizer, prompt: str, use_carp: bool, carp_cfg: 
             high_bits=carp_cfg["high_bits"],
             base_fraction=float(carp_cfg["base_fraction"]),
             max_fraction=float(carp_cfg["max_fraction"]),
+            base_codec=carp_cfg.get("base_codec", "polar"),
+            upgrade_codec=carp_cfg.get("upgrade_codec", "high_polar"),
+            selector_mode=carp_cfg.get("selector_mode", "learned"),
             risk_tau=float(carp_cfg["risk_tau"]),
             risk_lambda=float(carp_cfg["risk_lambda"]),
             risk_gamma=float(carp_cfg.get("risk_gamma", 1.0)),
@@ -455,6 +507,9 @@ def main() -> None:
     parser.add_argument("--max-length-words", type=int, default=3000)
     parser.add_argument("--full-max-context-tokens", type=int, default=768)
     parser.add_argument("--carp-max-fraction", type=float, default=0.15)
+    parser.add_argument("--base-codec", type=str, choices=["polar", "q4"], default="polar")
+    parser.add_argument("--upgrade-codec", type=str, choices=["high_polar", "exact"], default="high_polar")
+    parser.add_argument("--selector-mode", type=str, choices=["learned", "heuristic"], default="learned")
     parser.add_argument("--risk-tau", type=float, default=1.0)
     parser.add_argument("--risk-lambda", type=float, default=0.0)
     parser.add_argument("--risk-gamma", type=float, default=1.0)
@@ -474,6 +529,9 @@ def main() -> None:
         "high_bits": profile["high_bits_per_level"],
         "base_fraction": profile["comparisons"]["carp_margin_adaptive"]["mean_used_fraction"],
         "max_fraction": args.carp_max_fraction,
+        "base_codec": args.base_codec,
+        "upgrade_codec": args.upgrade_codec,
+        "selector_mode": args.selector_mode,
         "risk_tau": args.risk_tau,
         "risk_lambda": args.risk_lambda,
         "risk_gamma": args.risk_gamma,
@@ -546,6 +604,9 @@ def main() -> None:
         "carp": {
             "base_fraction": carp_cfg["base_fraction"],
             "max_fraction": carp_cfg["max_fraction"],
+            "base_codec": carp_cfg["base_codec"],
+            "upgrade_codec": carp_cfg["upgrade_codec"],
+            "selector_mode": carp_cfg["selector_mode"],
             "risk_tau": carp_cfg["risk_tau"],
             "risk_lambda": carp_cfg["risk_lambda"],
             "risk_gamma": carp_cfg["risk_gamma"],

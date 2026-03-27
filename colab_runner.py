@@ -205,6 +205,12 @@ def cmd_cache(args: argparse.Namespace) -> None:
             str(args.samples_per_task),
             "--full-max-context-tokens",
             str(args.full_max_context_tokens),
+            "--base-codec",
+            args.base_codec,
+            "--upgrade-codec",
+            args.upgrade_codec,
+            "--selector-mode",
+            args.selector_mode,
             "--exact-head-risk-threshold",
             str(threshold),
             "--output",
@@ -227,6 +233,12 @@ def cmd_multistep(args: argparse.Namespace) -> None:
         str(args.samples_per_task),
         "--decode-steps",
         str(args.decode_steps),
+        "--base-codec",
+        args.base_codec,
+        "--upgrade-codec",
+        args.upgrade_codec,
+        "--selector-mode",
+        args.selector_mode,
         "--exact-head-risk-threshold",
         str(args.exact_head_risk_threshold),
         "--entropy-fallback-threshold",
@@ -309,6 +321,9 @@ def build_parser() -> argparse.ArgumentParser:
     cache.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
     cache.add_argument("--samples-per-task", type=int, default=5)
     cache.add_argument("--full-max-context-tokens", type=int, default=512)
+    cache.add_argument("--base-codec", choices=["polar", "q4"], default="polar")
+    cache.add_argument("--upgrade-codec", choices=["high_polar", "exact"], default="high_polar")
+    cache.add_argument("--selector-mode", choices=["learned", "heuristic"], default="learned")
     cache.add_argument("--exact-head-thresholds", nargs="+", type=float, default=[0.8, 0.7])
     cache.set_defaults(func=cmd_cache)
 
@@ -318,6 +333,9 @@ def build_parser() -> argparse.ArgumentParser:
     multistep.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
     multistep.add_argument("--samples-per-task", type=int, default=5)
     multistep.add_argument("--decode-steps", type=int, default=8)
+    multistep.add_argument("--base-codec", choices=["polar", "q4"], default="polar")
+    multistep.add_argument("--upgrade-codec", choices=["high_polar", "exact"], default="high_polar")
+    multistep.add_argument("--selector-mode", choices=["learned", "heuristic"], default="learned")
     multistep.add_argument("--exact-head-risk-threshold", type=float, default=0.7)
     multistep.add_argument("--entropy-fallback-threshold", type=float, default=0.30)
     multistep.add_argument(

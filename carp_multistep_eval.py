@@ -38,6 +38,9 @@ def decode_steps(
             high_bits=carp_cfg["high_bits"],
             base_fraction=float(carp_cfg["base_fraction"]),
             max_fraction=float(carp_cfg["max_fraction"]),
+            base_codec=carp_cfg.get("base_codec", "polar"),
+            upgrade_codec=carp_cfg.get("upgrade_codec", "high_polar"),
+            selector_mode=carp_cfg.get("selector_mode", "learned"),
             risk_tau=float(carp_cfg["risk_tau"]),
             risk_lambda=float(carp_cfg["risk_lambda"]),
             risk_gamma=float(carp_cfg.get("risk_gamma", 1.0)),
@@ -122,6 +125,9 @@ def decode_steps_entropy_fallback(
         high_bits=carp_cfg["high_bits"],
         base_fraction=float(carp_cfg["base_fraction"]),
         max_fraction=float(carp_cfg["max_fraction"]),
+        base_codec=carp_cfg.get("base_codec", "polar"),
+        upgrade_codec=carp_cfg.get("upgrade_codec", "high_polar"),
+        selector_mode=carp_cfg.get("selector_mode", "learned"),
         risk_tau=float(carp_cfg["risk_tau"]),
         risk_lambda=float(carp_cfg["risk_lambda"]),
         risk_gamma=float(carp_cfg.get("risk_gamma", 1.0)),
@@ -223,6 +229,9 @@ def main() -> None:
     parser.add_argument("--max-length-words", type=int, default=3000)
     parser.add_argument("--max-context-tokens", type=int, default=512)
     parser.add_argument("--decode-steps", type=int, default=32)
+    parser.add_argument("--base-codec", type=str, choices=["polar", "q4"], default="polar")
+    parser.add_argument("--upgrade-codec", type=str, choices=["high_polar", "exact"], default="high_polar")
+    parser.add_argument("--selector-mode", type=str, choices=["learned", "heuristic"], default="learned")
     parser.add_argument("--risk-tau", type=float, default=2.0)
     parser.add_argument("--risk-lambda", type=float, default=0.5)
     parser.add_argument("--risk-gamma", type=float, default=1.0)
@@ -243,6 +252,9 @@ def main() -> None:
         "high_bits": profile["high_bits_per_level"],
         "base_fraction": profile["comparisons"]["carp_margin_adaptive"]["mean_used_fraction"],
         "max_fraction": 0.15,
+        "base_codec": args.base_codec,
+        "upgrade_codec": args.upgrade_codec,
+        "selector_mode": args.selector_mode,
         "risk_tau": args.risk_tau,
         "risk_lambda": args.risk_lambda,
         "risk_gamma": args.risk_gamma,
