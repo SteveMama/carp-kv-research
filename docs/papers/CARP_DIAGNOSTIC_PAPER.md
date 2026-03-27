@@ -316,7 +316,7 @@ This is also why the project eventually stopped treating vector reconstruction a
 
 The next question was whether offline score preservation survives real decoding.
 
-### 8.1 Polar-backed CARP
+### 9.1 Polar-backed CARP
 
 At `512` context tokens, second-step cache-path results were:
 
@@ -326,7 +326,7 @@ At `512` context tokens, second-step cache-path results were:
 | `multifieldqa_en` | 1.0 | 0.8 | 1.0 | 0.1714 |
 | `2wikimqa` | 1.0 | 1.0 | 1.0 | 0.1864 |
 
-### 8.2 q4-backed CARP
+### 9.2 q4-backed CARP
 
 At the same context length:
 
@@ -336,7 +336,7 @@ At the same context length:
 | `multifieldqa_en` | 1.0 | 1.0 | 1.0 | 0.0239 |
 | `2wikimqa` | 1.0 | 1.0 | 1.0 | 0.00197 |
 
-### 8.3 Interpretation
+### 9.3 Interpretation
 
 On this real second-step benchmark:
 
@@ -350,15 +350,15 @@ This is one of the most important practical results in the repo.
 
 The project uncovered a three-level failure taxonomy.
 
-### 9.1 Token-Level Fallback
+### 10.1 Token-Level Fallback
 
 The first natural intervention is to make a small set of risky promoted tokens exact. This helps in some settings but did not fully explain the strongest failures.
 
-### 9.2 Head-Level Fallback
+### 10.2 Head-Level Fallback
 
 Single-step cache-path experiments showed that some failures are better explained at the head level than the token level. Making an entire risky head exact could fix cases where token-level exact fallback did not.
 
-### 9.3 Decode-Step Fallback
+### 10.3 Decode-Step Fallback
 
 Multi-step generation exposed a deeper issue: later failures were not simply caused by persistent bad heads. Instead, they appeared as sudden, step-local KL spikes.
 
@@ -485,7 +485,163 @@ The main findings are:
 
 So the project does not end as a simple “better codec” paper. It ends as a diagnostic paper with a practical mixed-precision baseline, and that is a stronger and more honest contribution.
 
-## Appendix A. Canonical Files
+## References
+
+1. PolarQuant.
+   Fixed-rate polar-coordinate quantization for KV-cache compression with randomized preconditioning.
+2. KIVI.
+   Asymmetric low-bit KV-cache quantization.
+3. SnapKV.
+   Token-level KV pruning using observed attention structure.
+4. HeadKV.
+   Head-aware KV retention and pruning.
+5. PyramidKV.
+   Pyramid-style KV compression across the context.
+6. KVPress / Expected Attention.
+   Query-distribution-aware KV compression and pruning.
+7. Guo et al., "Accelerating Large-Scale Inference with Anisotropic Vector Quantization," ICML 2020.
+   Shows that score-direction distortion matters more than raw vector MSE for retrieval-like objectives.
+8. "Lost in the Middle," TACL 2024.
+   Documents failure to use relevant information in long prompts even when it is present.
+9. NoLiMa.
+   Harder long-context evaluation when lexical overlap is reduced.
+10. TurboQuant.
+    Near-optimal online vector quantization for KV-cache compression.
+
+## Appendix A. Reproducibility
+
+This appendix records the main scripts, the intended commands, and the primary output files.
+
+### A.1 Environment
+
+Primary model:
+
+- `Qwen/Qwen2.5-0.5B-Instruct`
+
+Primary tasks:
+
+- `qasper`
+- `multifieldqa_en`
+- `2wikimqa`
+
+Primary setup helper:
+
+- [`colab_runner.py`](../../colab_runner.py)
+
+### A.2 Canonical Offline Benchmark
+
+Command:
+
+```bash
+python colab_runner.py realbench \
+  --model-name "Qwen/Qwen2.5-0.5B-Instruct" \
+  --tasks qasper multifieldqa_en 2wikimqa \
+  --samples-per-task 1 \
+  --max-context-tokens 1024 \
+  --min-query-pos 32
+```
+
+Primary output:
+
+- `results/real_qk_attention_benchmark.json`
+
+Optional summary:
+
+```bash
+python colab_runner.py summarize-realbench \
+  --input results/real_qk_attention_benchmark.json \
+  --output results/real_qk_attention_summary.md
+```
+
+### A.3 Legacy Proxy Diagnosis
+
+Commands:
+
+```bash
+python colab_runner.py profile \
+  --model-name "Qwen/Qwen2.5-0.5B-Instruct" \
+  --tasks qasper multifieldqa_en 2wikimqa \
+  --samples-per-task 2 \
+  --max-context-tokens 1024 \
+  --max-vectors-per-item 4096
+```
+
+```bash
+python colab_runner.py diagnose \
+  --model-name "Qwen/Qwen2.5-0.5B-Instruct" \
+  --tasks qasper multifieldqa_en 2wikimqa \
+  --samples-per-task 1 \
+  --max-context-tokens 1024 \
+  --max-vectors-per-item 4096
+```
+
+Primary outputs:
+
+- `results/qwen_polar_profile.json`
+- `results/qwen_protocol_diagnosis.json`
+
+These are retained for diagnosis only, not as the main codec benchmark.
+
+### A.4 Second-Step Cache-Path Benchmarks
+
+Polar-backed CARP:
+
+```bash
+python colab_runner.py cache \
+  --model-name "Qwen/Qwen2.5-0.5B-Instruct" \
+  --tasks qasper multifieldqa_en 2wikimqa \
+  --samples-per-task 5 \
+  --full-max-context-tokens 512 \
+  --base-codec polar \
+  --upgrade-codec high_polar \
+  --selector-mode heuristic \
+  --exact-head-thresholds 0.8 0.7
+```
+
+q4-backed CARP:
+
+```bash
+python colab_runner.py cache \
+  --model-name "Qwen/Qwen2.5-0.5B-Instruct" \
+  --tasks qasper multifieldqa_en 2wikimqa \
+  --samples-per-task 5 \
+  --full-max-context-tokens 512 \
+  --base-codec q4 \
+  --upgrade-codec exact \
+  --selector-mode heuristic \
+  --exact-head-thresholds 0.8 0.7
+```
+
+Primary outputs:
+
+- `results/carp_cache_eval_polar_high_polar_heuristic_thr08_gpu.json`
+- `results/carp_cache_eval_polar_high_polar_heuristic_thr07_gpu.json`
+- `results/carp_cache_eval_q4_exact_heuristic_thr08_gpu.json`
+- `results/carp_cache_eval_q4_exact_heuristic_thr07_gpu.json`
+
+### A.5 Multi-Step Benchmarks
+
+Example command:
+
+```bash
+python colab_runner.py multistep \
+  --model-name "Qwen/Qwen2.5-0.5B-Instruct" \
+  --tasks qasper multifieldqa_en 2wikimqa \
+  --samples-per-task 1 \
+  --decode-steps 8 \
+  --base-codec q4 \
+  --upgrade-codec exact \
+  --selector-mode heuristic \
+  --exact-head-risk-threshold 0.7 \
+  --entropy-fallback-threshold 0.30
+```
+
+Representative outputs:
+
+- `results/carp_multistep_eval_q4_exact_heuristic_thr07_entropy0p3_gpu.json`
+- `results/carp_multistep_eval_polar_high_polar_heuristic_thr07_entropy0p3_gpu.json`
+
+### A.6 Canonical Files
 
 Primary code:
 
