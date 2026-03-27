@@ -194,6 +194,7 @@ def cmd_cache(args: argparse.Namespace) -> None:
     maybe_set_hf_token(args.hf_token)
     ensure_longbench()
     for threshold in args.exact_head_thresholds:
+        codec_tag = f"{args.base_codec}_{args.upgrade_codec}_{args.selector_mode}"
         cmd = [
             sys.executable,
             "carp_cache_eval.py",
@@ -214,7 +215,7 @@ def cmd_cache(args: argparse.Namespace) -> None:
             "--exact-head-risk-threshold",
             str(threshold),
             "--output",
-            f"results/carp_cache_eval_thr{str(threshold).replace('.', '')}_gpu.json",
+            f"results/carp_cache_eval_{codec_tag}_thr{str(threshold).replace('.', '')}_gpu.json",
         ]
         run(cmd)
 
@@ -222,6 +223,11 @@ def cmd_cache(args: argparse.Namespace) -> None:
 def cmd_multistep(args: argparse.Namespace) -> None:
     maybe_set_hf_token(args.hf_token)
     ensure_longbench()
+    output = args.output
+    if not output:
+        entropy_tag = str(args.entropy_fallback_threshold).replace(".", "p")
+        codec_tag = f"{args.base_codec}_{args.upgrade_codec}_{args.selector_mode}"
+        output = f"results/carp_multistep_eval_{codec_tag}_thr{str(args.exact_head_risk_threshold).replace('.', '')}_entropy{entropy_tag}_gpu.json"
     cmd = [
         sys.executable,
         "carp_multistep_eval.py",
@@ -244,7 +250,7 @@ def cmd_multistep(args: argparse.Namespace) -> None:
         "--entropy-fallback-threshold",
         str(args.entropy_fallback_threshold),
         "--output",
-        args.output,
+        output,
     ]
     run(cmd)
 
@@ -350,10 +356,7 @@ def build_parser() -> argparse.ArgumentParser:
     multistep.add_argument("--selector-mode", choices=["learned", "heuristic"], default="learned")
     multistep.add_argument("--exact-head-risk-threshold", type=float, default=0.7)
     multistep.add_argument("--entropy-fallback-threshold", type=float, default=0.30)
-    multistep.add_argument(
-        "--output",
-        default="results/carp_multistep_eval_thr07_entropy03_gpu.json",
-    )
+    multistep.add_argument("--output", default="")
     multistep.set_defaults(func=cmd_multistep)
 
     diagnose = sub.add_parser("diagnose", help="Run legacy same-item vs cross-item proxy diagnosis.")

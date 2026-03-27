@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import time
 
 import numpy as np
 import torch
@@ -14,6 +15,50 @@ from main import HF_QWEN_SMALL, RESULTS_DIR
 
 
 RESULT_PATH = RESULTS_DIR / "carp_multistep_eval.json"
+
+
+def summarize_records(records: list[dict], tasks: list[str], decode_steps: int) -> dict[str, dict[str, float]]:
+    summary: dict[str, dict[str, float]] = {}
+    for task in tasks:
+        rows = [r for r in records if r["task"] == task]
+        if not rows:
+            continue
+        divergence = [r["first_divergence_step"] or (decode_steps + 1) for r in rows]
+        summary[task] = {
+            "token_match_rate": float(np.mean([r["token_match_rate"] for r in rows])),
+            "first_divergence_step": float(np.mean(divergence)),
+            "set_overlap": float(np.mean([r["set_overlap"] for r in rows])),
+            "mean_exact_head_fraction": float(np.mean([r["mean_exact_head_fraction"] for r in rows])),
+            "mean_final_step_kl": float(np.mean([r["step_kls"][-1] for r in rows])),
+        }
+        hybrid_rows = [r["hybrid"] for r in rows if r.get("hybrid") is not None]
+        if hybrid_rows:
+            hybrid_divergence = [r["first_divergence_step"] or (decode_steps + 1) for r in hybrid_rows]
+            summary[task]["hybrid_token_match_rate"] = float(np.mean([r["token_match_rate"] for r in hybrid_rows]))
+            summary[task]["hybrid_first_divergence_step"] = float(np.mean(hybrid_divergence))
+            summary[task]["hybrid_set_overlap"] = float(np.mean([r["set_overlap"] for r in hybrid_rows]))
+            summary[task]["hybrid_mean_final_step_kl"] = float(np.mean([r["step_kls"][-1] for r in hybrid_rows]))
+            summary[task]["hybrid_fallback_rate"] = float(np.mean([r["fallback_rate"] for r in hybrid_rows]))
+    return summary
+
+
+def build_result_payload(args: argparse.Namespace, carp_cfg: dict, records: list[dict], completed: int, total: int) -> dict:
+    return {
+        "model_name": args.model_name,
+        "tasks": args.tasks,
+        "samples_per_task": args.samples_per_task,
+        "decode_steps": args.decode_steps,
+        "carp": carp_cfg,
+        "completed_records": completed,
+        "total_records": total,
+        "records": records,
+        "summary": summarize_records(records, args.tasks, args.decode_steps),
+    }
+
+
+def write_result(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
 def decode_steps(
@@ -269,12 +314,21 @@ def main() -> None:
     model.eval()
     prompt_map, _ = load_prompt_config()
     original_forward, patched = patch_qwen_attention()
+    out = Path(args.output)
+    total_records = len(args.tasks) * args.samples_per_task
+    overall_start = time.time()
 
     try:
         records: list[dict] = []
         for task in args.tasks:
             items = load_longbench_items(task, args.samples_per_task, args.max_length_words)
-            for item in items:
+            for item_idx, item in enumerate(items, start=1):
+                record_idx = len(records) + 1
+                item_start = time.time()
+                print(
+                    f"[multistep] start {record_idx}/{total_records} "
+                    f"task={task} item={item_idx}/{len(items)} id={item.item_id[:12]}"
+                )
                 question_prompt = make_question_prompt(task, item.input, prompt_map[task])
                 context, _, _ = truncate_middle_by_tokens(tokenizer, item.context, args.max_context_tokens)
                 prompt = build_prompt(context, question_prompt)
@@ -360,44 +414,32 @@ def main() -> None:
                         "set_overlap": hybrid_overlap,
                         "fallback_rate": float(np.mean([1.0 if x else 0.0 for x in hybrid["fallback_steps"]])),
                     }
+                payload = build_result_payload(args, carp_cfg, records, len(records), total_records)
+                write_result(out, payload)
+                elapsed = time.time() - item_start
+                total_elapsed = time.time() - overall_start
+                latest = records[-1]
+                msg = (
+                    f"[multistep] done  {len(records)}/{total_records} "
+                    f"task={task} id={item.item_id[:12]} "
+                    f"match={latest['token_match_rate']:.3f} "
+                    f"div={latest['first_divergence_step']} "
+                    f"final_kl={latest['step_kls'][-1]:.4f} "
+                    f"item_time={elapsed:.1f}s total={total_elapsed/60:.1f}m"
+                )
+                if latest.get("hybrid") is not None:
+                    hybrid_info = latest["hybrid"]
+                    msg += (
+                        f" hybrid_match={hybrid_info['token_match_rate']:.3f} "
+                        f"hybrid_div={hybrid_info['first_divergence_step']} "
+                        f"fallback={hybrid_info['fallback_rate']:.3f}"
+                    )
+                print(msg)
     finally:
         if patched:
             restore_qwen_attention(original_forward)
-
-    summary: dict[str, dict[str, float]] = {}
-    for task in args.tasks:
-        rows = [r for r in records if r["task"] == task]
-        if not rows:
-            continue
-        divergence = [r["first_divergence_step"] or (args.decode_steps + 1) for r in rows]
-        summary[task] = {
-            "token_match_rate": float(np.mean([r["token_match_rate"] for r in rows])),
-            "first_divergence_step": float(np.mean(divergence)),
-            "set_overlap": float(np.mean([r["set_overlap"] for r in rows])),
-            "mean_exact_head_fraction": float(np.mean([r["mean_exact_head_fraction"] for r in rows])),
-            "mean_final_step_kl": float(np.mean([r["step_kls"][-1] for r in rows])),
-        }
-        hybrid_rows = [r["hybrid"] for r in rows if r.get("hybrid") is not None]
-        if hybrid_rows:
-            hybrid_divergence = [r["first_divergence_step"] or (args.decode_steps + 1) for r in hybrid_rows]
-            summary[task]["hybrid_token_match_rate"] = float(np.mean([r["token_match_rate"] for r in hybrid_rows]))
-            summary[task]["hybrid_first_divergence_step"] = float(np.mean(hybrid_divergence))
-            summary[task]["hybrid_set_overlap"] = float(np.mean([r["set_overlap"] for r in hybrid_rows]))
-            summary[task]["hybrid_mean_final_step_kl"] = float(np.mean([r["step_kls"][-1] for r in hybrid_rows]))
-            summary[task]["hybrid_fallback_rate"] = float(np.mean([r["fallback_rate"] for r in hybrid_rows]))
-
-    result = {
-        "model_name": args.model_name,
-        "tasks": args.tasks,
-        "samples_per_task": args.samples_per_task,
-        "decode_steps": args.decode_steps,
-        "carp": carp_cfg,
-        "records": records,
-        "summary": summary,
-    }
-    out = Path(args.output)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    result = build_result_payload(args, carp_cfg, records, len(records), total_records)
+    write_result(out, result)
     print(json.dumps(result, indent=2))
 
 
