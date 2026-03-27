@@ -4,6 +4,15 @@
 
 This document reports the full experimental trajectory of a KV-cache compression project that began as a codec-design effort and ended as a diagnostic and evaluation framework for KV-cache quantization. The initial goal was to improve over fixed-rate polar quantization by promoting a small, query-conditioned subset of keys to higher precision. Early offline results appeared strong, but were later traced to an invalid benchmark that used held-out keys as pseudo-queries and mixed keys across layers. After replacing that proxy with a real same-layer query/key attention benchmark, the project reached three stable conclusions. First, real post-RoPE, same-layer, same-head, causal-prefix evaluation is necessary for meaningful offline KV-cache codec comparison. Second, quantization failures during generation are best understood at three levels: token-level, head-level, and decode-step level, with multi-step failures driven by query-trajectory divergence rather than static key distortion alone. Third, on `Qwen/Qwen2.5-0.5B-Instruct`, a simple mixed-precision baseline built from `q4` plus a tiny exact promoted subset outperforms the polar-backed variant in real cache-path fidelity, while `CARP-polar` remains a valid result under the corrected offline benchmark. The strongest contribution of the project is therefore not a new universally superior codec, but a diagnostic framework, a corrected benchmark methodology, and a set of practical mixed-precision baselines grounded in those findings.
 
+## Key Takeaways
+
+1. The original mixed-layer key-only proxy benchmark was invalid for codec ranking and could misstate quality by about an order of magnitude.
+2. The correct offline benchmark is real post-RoPE `Q/K`, measured within the same layer, same KV head, and causal key prefix.
+3. `CARP-polar` is a valid corrected-benchmark result: it matches high-polar quality at roughly low-polar cost.
+4. On `Qwen/Qwen2.5-0.5B`, `q4` is the stronger base codec in real cache-path tests, and `q4 + exact promoted subset` is the strongest practical system in this repo.
+5. Reconstruction error is not attention error: vector `L2` distortion alone does not predict attention fidelity or generation stability.
+6. Multi-step failures are driven by query-trajectory divergence, which is why token-level and head-level fixes are not sufficient on their own.
+
 ## 1. Introduction
 
 KV-cache compression is attractive because long-context decoding is dominated by memory footprint and memory bandwidth rather than arithmetic alone. A standard decoder-only transformer computes:
