@@ -237,6 +237,32 @@ def cmd_multistep(args: argparse.Namespace) -> None:
     run(cmd)
 
 
+def cmd_diagnose(args: argparse.Namespace) -> None:
+    maybe_set_hf_token(args.hf_token)
+    ensure_longbench()
+    cmd = [
+        sys.executable,
+        "diagnose_qwen_kv_protocol.py",
+        "--model-name",
+        args.model_name,
+        "--tasks",
+        *args.tasks,
+        "--samples-per-task",
+        str(args.samples_per_task),
+        "--max-context-tokens",
+        str(args.max_context_tokens),
+        "--max-vectors-per-item",
+        str(args.max_vectors_per_item),
+        "--eval-keys",
+        str(args.eval_keys),
+        "--eval-queries",
+        str(args.eval_queries),
+        "--output",
+        args.output,
+    ]
+    run(cmd)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Colab runner for CARP-KV experiments.")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -277,6 +303,21 @@ def build_parser() -> argparse.ArgumentParser:
         default="results/carp_multistep_eval_thr07_entropy03_gpu.json",
     )
     multistep.set_defaults(func=cmd_multistep)
+
+    diagnose = sub.add_parser("diagnose", help="Run same-item vs cross-item codec diagnosis.")
+    diagnose.add_argument("--hf-token", default="")
+    diagnose.add_argument("--model-name", default="Qwen/Qwen2.5-0.5B-Instruct")
+    diagnose.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
+    diagnose.add_argument("--samples-per-task", type=int, default=1)
+    diagnose.add_argument("--max-context-tokens", type=int, default=1024)
+    diagnose.add_argument("--max-vectors-per-item", type=int, default=4096)
+    diagnose.add_argument("--eval-keys", type=int, default=2048)
+    diagnose.add_argument("--eval-queries", type=int, default=256)
+    diagnose.add_argument(
+        "--output",
+        default="results/qwen_protocol_diagnosis.json",
+    )
+    diagnose.set_defaults(func=cmd_diagnose)
 
     return parser
 
