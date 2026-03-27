@@ -297,6 +297,18 @@ def cmd_realbench(args: argparse.Namespace) -> None:
     run(cmd)
 
 
+def cmd_summarize_realbench(args: argparse.Namespace) -> None:
+    cmd = [
+        sys.executable,
+        "summarize_real_qk_benchmark.py",
+        "--input",
+        args.input,
+        "--output",
+        args.output,
+    ]
+    run(cmd)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Colab runner for CARP-KV experiments.")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -371,6 +383,11 @@ def build_parser() -> argparse.ArgumentParser:
         default="results/real_qk_attention_benchmark.json",
     )
     realbench.set_defaults(func=cmd_realbench)
+
+    summarize = sub.add_parser("summarize-realbench", help="Summarize the real Q/K benchmark into a paper-ready table.")
+    summarize.add_argument("--input", default="results/real_qk_attention_benchmark.json")
+    summarize.add_argument("--output", default="results/real_qk_attention_summary.md")
+    summarize.set_defaults(func=cmd_summarize_realbench)
 
     return parser
 
