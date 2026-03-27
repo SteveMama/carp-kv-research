@@ -263,6 +263,28 @@ def cmd_diagnose(args: argparse.Namespace) -> None:
     run(cmd)
 
 
+def cmd_realbench(args: argparse.Namespace) -> None:
+    maybe_set_hf_token(args.hf_token)
+    ensure_longbench()
+    cmd = [
+        sys.executable,
+        "benchmark_real_qk_attention.py",
+        "--model-name",
+        args.model_name,
+        "--tasks",
+        *args.tasks,
+        "--samples-per-task",
+        str(args.samples_per_task),
+        "--max-context-tokens",
+        str(args.max_context_tokens),
+        "--min-query-pos",
+        str(args.min_query_pos),
+        "--output",
+        args.output,
+    ]
+    run(cmd)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Colab runner for CARP-KV experiments.")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -318,6 +340,19 @@ def build_parser() -> argparse.ArgumentParser:
         default="results/qwen_protocol_diagnosis.json",
     )
     diagnose.set_defaults(func=cmd_diagnose)
+
+    realbench = sub.add_parser("realbench", help="Run real same-layer Q/K attention benchmark.")
+    realbench.add_argument("--hf-token", default="")
+    realbench.add_argument("--model-name", default="Qwen/Qwen2.5-0.5B-Instruct")
+    realbench.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
+    realbench.add_argument("--samples-per-task", type=int, default=1)
+    realbench.add_argument("--max-context-tokens", type=int, default=1024)
+    realbench.add_argument("--min-query-pos", type=int, default=32)
+    realbench.add_argument(
+        "--output",
+        default="results/real_qk_attention_benchmark.json",
+    )
+    realbench.set_defaults(func=cmd_realbench)
 
     return parser
 
