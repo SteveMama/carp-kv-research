@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
+import shutil
 import shlex
 import subprocess
 import sys
@@ -10,6 +11,8 @@ import sys
 
 REPO_ROOT = Path(__file__).resolve().parent
 LONG_BENCH_REPO = REPO_ROOT / "LongBenchRepo"
+VENV_DIR = REPO_ROOT / ".venv-colab"
+VENV_PYTHON = VENV_DIR / "bin" / "python"
 DEFAULT_TASKS = ["qasper", "multifieldqa_en", "2wikimqa"]
 
 
@@ -24,11 +27,41 @@ def maybe_set_hf_token(token: str) -> None:
         print("HF token set")
 
 
+def longbench_layout_valid(repo_root: Path) -> bool:
+    candidates = [
+        repo_root / "LongBench",
+        repo_root,
+    ]
+    for candidate in candidates:
+        if (candidate / "data").exists() and (candidate / "config").exists():
+            return True
+    return False
+
+
 def ensure_longbench() -> None:
-    if LONG_BENCH_REPO.exists():
+    if LONG_BENCH_REPO.exists() and longbench_layout_valid(LONG_BENCH_REPO):
         print(f"LongBench repo already present: {LONG_BENCH_REPO}")
         return
+    if LONG_BENCH_REPO.exists():
+        print(f"LongBench repo exists but is invalid, recloning: {LONG_BENCH_REPO}")
+        shutil.rmtree(LONG_BENCH_REPO)
     run(["git", "clone", "https://github.com/THUDM/LongBench.git", str(LONG_BENCH_REPO)])
+    if not longbench_layout_valid(LONG_BENCH_REPO):
+        raise RuntimeError(
+            f"Cloned LongBench repo but still could not find a valid data/config layout under {LONG_BENCH_REPO}"
+        )
+
+
+def maybe_reexec_into_venv(command: str) -> None:
+    if command == "setup":
+        return
+    if not VENV_PYTHON.exists():
+        return
+    current = Path(sys.executable).resolve()
+    target = VENV_PYTHON.resolve()
+    if current == target:
+        return
+    os.execv(str(target), [str(target), str(Path(__file__).resolve()), *sys.argv[1:]])
 
 
 def cmd_setup(args: argparse.Namespace) -> None:
@@ -39,7 +72,10 @@ def cmd_setup(args: argparse.Namespace) -> None:
     except Exception:
         print("nvidia-smi unavailable")
 
-    pip_base = [sys.executable, "-m", "pip", "install", "-U"]
+    if not VENV_PYTHON.exists():
+        run([sys.executable, "-m", "venv", str(VENV_DIR)])
+
+    pip_base = [str(VENV_PYTHON), "-m", "pip", "install", "-U"]
     if args.install_torch:
         run(
             pip_base
@@ -62,6 +98,7 @@ def cmd_setup(args: argparse.Namespace) -> None:
             "scikit-learn",
         ]
     )
+    run([str(VENV_PYTHON), "-V"])
     ensure_longbench()
 
 
@@ -179,6 +216,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+    maybe_reexec_into_venv(args.command)
     args.func(args)
 
 
