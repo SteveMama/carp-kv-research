@@ -549,3 +549,37 @@
     - the 8-step proxy is useful for studying generation stability and divergence
     - it is NOT a valid task-level LongBench metric on these samples, because 8 generated tokens do not contain complete answers
     - any real task-level comparison now requires full-answer generation, not short continuation scoring
+## 2026-03-26 21:10:00
+- Notes: real_same_layer_qk_attention_benchmark
+- Tasks: `qasper`, `multifieldqa_en`, `2wikimqa`
+- Samples/task: `1`
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Protocol:
+  - real post-RoPE queries and keys
+  - same layer, same KV head
+  - causal key prefix per query position
+  - minimum query position = `32`
+- Finding:
+  - this replaces the earlier mixed-layer key-only proxy as the primary offline codec benchmark
+  - macro results:
+    - `polar`
+      - top-1 = `0.8097`
+      - top-8 = `0.9543`
+      - top-16 = `0.9635`
+      - mean relative L2 = `0.1468`
+    - `q4_per_channel`
+      - top-1 = `0.8635`
+      - top-8 = `0.9932`
+      - top-16 = `0.9979`
+      - mean relative L2 = `0.0940`
+    - `lowrank_sparse`
+      - top-1 = `0.8031`
+      - top-8 = `0.9555`
+      - top-16 = `0.9799`
+      - mean relative L2 = `0.3630`
+- Interpretation:
+  - the earlier GPU collapse of polar to ~`0.10` top-1 was mainly an artifact of the wrong benchmark protocol
+  - polar is viable under real attention geometry on this model
+  - but `q4_per_channel` is currently the strongest tested base codec on `Qwen2.5-0.5B`
+  - the project should no longer hard-code “polar backbone” as a universal conclusion
+  - the next step is to test whether the CARP precision-allocation policy transfers to a `q4` base, and to compare that against the current polar-based cache path

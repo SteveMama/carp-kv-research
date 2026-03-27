@@ -69,6 +69,41 @@ The repo now distinguishes between two different offline evaluations:
 
 Future codec claims should be based on the real same-layer Q/K benchmark and on end-to-end cache-path generation tests, not on the legacy proxy alone.
 
+## 1.2 First Real Q/K Result On Qwen-0.5B
+
+The first trustworthy offline codec result on `Qwen/Qwen2.5-0.5B-Instruct` came from the real same-layer Q/K benchmark.
+
+Macro results on `qasper`, `multifieldqa_en`, and `2wikimqa`:
+
+- `polar`:
+  - top-1 = `0.8097`
+  - top-8 = `0.9543`
+  - top-16 = `0.9635`
+  - mean relative L2 = `0.1468`
+- `q4_per_channel`:
+  - top-1 = `0.8635`
+  - top-8 = `0.9932`
+  - top-16 = `0.9979`
+  - mean relative L2 = `0.0940`
+- `lowrank_sparse`:
+  - top-1 = `0.8031`
+  - top-8 = `0.9555`
+  - top-16 = `0.9799`
+  - mean relative L2 = `0.3630`
+
+This changes the interpretation substantially:
+
+- the old mixed-layer proxy made `polar` look either much stronger or much weaker depending on the slice
+- under real attention geometry, `polar` is viable but not dominant on this model
+- `q4_per_channel` is the strongest base codec among the tested options on `Qwen2.5-0.5B`
+- `lowrank_sparse` is not competitive on reconstruction, but it is less catastrophically bad on real attention than the legacy proxy suggested
+
+So on this model, the correct framing is no longer “polar backbone is clearly best.” The more defensible framing is:
+
+- the precision-allocation machinery is still the main contribution
+- the base codec should be treated as model-dependent
+- on `Qwen2.5-0.5B`, `q4_per_channel` is currently the better base candidate than low-bit polar
+
 ## 2. Problem Statement
 
 We want to compress the KV cache while preserving model behavior during long-context autoregressive generation.

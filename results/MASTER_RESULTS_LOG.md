@@ -740,3 +740,47 @@ All three variants scored `0.0` macro:
 - `0.7` + entropy `0.30` hybrid continuation
 
 So the `8`-step decode test is a **stability proxy**, not a task-level benchmark. It is useful for diagnosing divergence, but it is too short to evaluate actual LongBench answer quality.
+
+## 15. Real Same-Layer Q/K Benchmark
+
+I then replaced the earlier mixed-layer key-only proxy with a real attention benchmark:
+
+- real post-RoPE queries
+- real post-RoPE keys
+- same layer
+- same KV head
+- causal prefix scoring at each query position
+
+This is the first trustworthy offline codec-quality benchmark in the repo.
+
+### Macro Results On Qwen-0.5B
+
+- `polar`
+  - top-1 = `0.8097`
+  - top-8 = `0.9543`
+  - top-16 = `0.9635`
+  - mean relative L2 = `0.1468`
+- `q4_per_channel`
+  - top-1 = `0.8635`
+  - top-8 = `0.9932`
+  - top-16 = `0.9979`
+  - mean relative L2 = `0.0940`
+- `lowrank_sparse`
+  - top-1 = `0.8031`
+  - top-8 = `0.9555`
+  - top-16 = `0.9799`
+  - mean relative L2 = `0.3630`
+
+### Updated Interpretation
+
+- the earlier GPU result where polar collapsed to ~`0.10` top-1 was caused by the wrong benchmark protocol
+- same-item vs cross-item diagnosis already showed codebook transfer was not the main issue
+- the dominant problem in the old profiler was keys-as-queries plus cross-layer mixing
+- under real attention geometry, polar is much stronger than that proxy suggested
+- but on `Qwen2.5-0.5B`, `q4_per_channel` is still the best tested base codec
+
+So the project framing changes again:
+
+- CARP should be treated as a **codec-agnostic precision-allocation framework**
+- the base codec should be selected per model
+- on this model, the next meaningful experiment is a `q4`-backed CARP path, not more claims about a universally best polar backbone
