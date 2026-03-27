@@ -91,6 +91,46 @@ The durable contribution from this repo is:
    - head-level exact fallback
    - decode-step exact fallback
 3. The query-trajectory divergence explanation for multi-step failures.
+4. Clear empirical evidence that reconstruction error and attention fidelity are not the same thing.
+
+### 7. Reconstruction error is not attention error
+
+A core lesson from this project is that:
+
+```math
+\|k - \hat k\|_2^2
+```
+
+is only an indirect proxy for what attention actually uses:
+
+```math
+q^\top k / \sqrt{d}.
+```
+
+In principle, an `L2` reconstruction error of size `\varepsilon \|k\|^2` induces a score error on the order of:
+
+```math
+\varepsilon \cdot \|q\| \cdot \|k\| / \sqrt{d},
+```
+
+but softmax responds nonlinearly:
+
+- errors near decision boundaries can flip the winner
+- errors in the tails can matter very little
+
+This matters empirically in our results:
+
+- `polar` has worse reconstruction error than `q4`
+  - relative L2 about `0.147` vs `0.094`
+- but its real-attention top-1 is still competitive
+  - `0.809` vs `0.863`
+
+The reason is that error structure matters:
+
+- `polar` creates geometrically structured errors because angle quantization shifts whole directions
+- `q4` creates mostly per-channel independent noise
+
+That difference is mostly invisible in plain reconstruction metrics, but it matters for softmax and attention ranking.
 
 ## Repository Layout
 

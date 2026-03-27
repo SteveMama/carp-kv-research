@@ -244,7 +244,66 @@ But top-8 and top-16 are worse than plain `q4`. This means the promotion improve
 
 On these offline runs, the adaptive budget barely moved. The mean ambiguity was effectively zero, and the promoted fraction stayed near the base value. So the main offline value of `CARP` was a calibrated fixed promoted subset, not the full adaptive budget logic.
 
-## 8. Cache-Path Results
+## 8. Limitation: Reconstruction Error Is Not Attention Error
+
+One of the most important theoretical limitations exposed by this project is that vector reconstruction quality is not the same as attention fidelity.
+
+Classical codec analysis naturally bounds:
+
+```math
+\|k - \hat k\|_2^2,
+```
+
+but attention is driven by:
+
+```math
+q^\top k / \sqrt{d},
+```
+
+followed by softmax. If the reconstruction error is on the order of `\varepsilon \|k\|^2`, then the induced score error is only approximately controlled by:
+
+```math
+\Delta s \approx O\!\left(\varepsilon \cdot \|q\| \cdot \|k\| / \sqrt{d}\right).
+```
+
+Even that approximation is incomplete, because softmax is nonlinear:
+
+- if two candidate tokens have very similar scores, a small score perturbation can flip the top-1 decision
+- if a token is deep in the tail, a much larger score perturbation may have almost no behavioral effect
+
+So an `L2` reconstruction theorem does not translate cleanly into a theorem about attention preservation.
+
+This project found that gap empirically.
+
+Under the corrected real same-layer Q/K benchmark on `Qwen/Qwen2.5-0.5B`:
+
+- `polar` had worse reconstruction error than `q4`
+  - mean relative L2 about `0.147` vs `0.094`
+- yet `polar` still had competitive attention fidelity
+  - top-1 about `0.809` vs `0.863`
+
+So the ranking of methods under reconstruction error was not identical to the ranking under real attention preservation.
+
+The likely reason is structural:
+
+- `polar` introduces geometrically structured errors, because angle quantization perturbs whole directions in the embedding space
+- `q4` introduces mostly per-channel independent quantization noise
+
+Those two error types can have very different effects on:
+
+```math
+q^\top k
+```
+
+and on the downstream softmax, even when their vector-level distortion looks superficially comparable.
+
+This is also why the project eventually stopped treating vector reconstruction as the main target metric and instead prioritized:
+
+1. real same-layer Q/K top-k preservation,
+2. cache-path KL and top-1 retention,
+3. multi-step generation behavior.
+
+## 9. Cache-Path Results
 
 The next question was whether offline score preservation survives real decoding.
 
@@ -278,7 +337,7 @@ On this real second-step benchmark:
 
 This is one of the most important practical results in the repo.
 
-## 9. Failure Taxonomy
+## 10. Failure Taxonomy
 
 The project uncovered a three-level failure taxonomy.
 
@@ -296,7 +355,7 @@ Multi-step generation exposed a deeper issue: later failures were not simply cau
 
 This led to the more correct interpretation: once generation diverges, the model follows a different query trajectory.
 
-## 10. Query-Trajectory Divergence
+## 11. Query-Trajectory Divergence
 
 The most useful conceptual result from the multi-step experiments is that errors propagate primarily through the query, not only through the compressed keys.
 
@@ -314,7 +373,7 @@ Even if the later cache access were exact, it would be exact for the wrong query
 
 Instead, local instability depends on where the autoregressive trajectory moves in hidden-state space. This motivated the step-level fallback rule based on output entropy.
 
-## 11. Multi-Step Results and Cost
+## 12. Multi-Step Results and Cost
 
 The strongest local eight-step stability result used:
 
@@ -329,7 +388,7 @@ This reproduced exact eight-step generation on the small prompt set, but at high
 
 So the multi-step exact-fallback path is useful as a diagnostic and robustness tool, but not yet a compelling compression point on this small model.
 
-## 12. CPU vs GPU Lessons
+## 13. CPU vs GPU Lessons
 
 The project taught a clear CPU-vs-GPU lesson.
 
@@ -359,7 +418,7 @@ GPU did not simply “confirm the original story.” It corrected it:
 - `q4` is the stronger base codec on this model
 - the strongest cache-path result at `512` tokens is `q4 -> exact`, not `polar -> high_polar`
 
-## 13. What Failed
+## 14. What Failed
 
 Several lines did not survive broader evaluation:
 
@@ -370,7 +429,7 @@ Several lines did not survive broader evaluation:
 
 These failures are part of the contribution because they led directly to the corrected methodology and the more honest final framing.
 
-## 14. What Survived
+## 15. What Survived
 
 What remains strong:
 
@@ -380,7 +439,7 @@ What remains strong:
 4. `CARP-polar` as a valid low-cost promotion result under the correct benchmark.
 5. `q4 -> exact promoted subset` as the strongest practical cache-path baseline on this model.
 
-## 15. Limitations
+## 16. Limitations
 
 This work has several clear limitations.
 
@@ -390,7 +449,7 @@ This work has several clear limitations.
 4. The strongest head-level fallback behavior was first observed under local CPU/Mac conditions and needs broader GPU validation at longer contexts.
 5. There is no apples-to-apples published-table comparison against larger-model `PolarQuant-R` numbers yet.
 
-## 16. Recommended Final Framing
+## 17. Recommended Final Framing
 
 The most defensible framing for this project is not:
 
@@ -402,7 +461,7 @@ It is:
 
 Under that framing, the experimental story is coherent and useful.
 
-## 17. Conclusion
+## 18. Conclusion
 
 This project began as a search for a stronger KV-cache codec and ended with a more valuable result: a clearer picture of how KV quantization should be evaluated and where its failures actually come from.
 
