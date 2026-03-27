@@ -784,3 +784,63 @@ So the project framing changes again:
 - CARP should be treated as a **codec-agnostic precision-allocation framework**
 - the base codec should be selected per model
 - on this model, the next meaningful experiment is a `q4`-backed CARP path, not more claims about a universally best polar backbone
+
+## 16. Real Same-Layer Q/K Benchmark With High Polar And CARP
+
+I then extended the same real Q/K benchmark to include:
+
+- `polar_high`
+- `carp_polar`
+- `carp_q4_exact`
+
+using:
+
+- real post-RoPE queries
+- same layer and same KV head
+- causal key prefixes
+- online selector training on the first `32` query positions of each head
+
+### Macro Results
+
+- `polar`
+  - top-1 = `0.8087`
+  - top-8 = `0.9537`
+  - top-16 = `0.9629`
+  - mean relative L2 = `0.1468`
+- `polar_high`
+  - top-1 = `0.8296`
+  - top-8 = `0.9583`
+  - top-16 = `0.9654`
+  - mean relative L2 = `0.1222`
+- `q4_per_channel`
+  - top-1 = `0.8629`
+  - top-8 = `0.9930`
+  - top-16 = `0.9979`
+  - mean relative L2 = `0.0935`
+- `carp_polar`
+  - top-1 = `0.8293`
+  - top-8 = `0.9573`
+  - top-16 = `0.9642`
+  - mean used fraction = `0.0200`
+  - approximate bits/coord = `3.3525`
+- `carp_q4_exact`
+  - top-1 = `0.9350`
+  - top-8 = `0.9683`
+  - top-16 = `0.9788`
+  - mean used fraction = `0.0200`
+  - approximate bits/coord = `4.2400`
+
+### Updated Interpretation
+
+- the original CARP claim is now validated under the correct benchmark:
+  - `carp_polar` matches `polar_high` almost exactly while staying at near-low-polar bits
+- the benchmark also shows the framework should be codec-agnostic:
+  - `q4` is still the strongest plain base codec on this model
+- `carp_q4_exact` is very strong on top-1 preservation, but it gives up some top-8/top-16 containment relative to plain `q4`
+
+So the next end-to-end comparison is now well-defined:
+
+- `polar -> high_polar`
+- `q4 -> exact`
+
+and the cache-path harness is the right place to decide between them.

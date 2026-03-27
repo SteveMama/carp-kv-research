@@ -583,3 +583,50 @@
   - but `q4_per_channel` is currently the strongest tested base codec on `Qwen2.5-0.5B`
   - the project should no longer hard-code “polar backbone” as a universal conclusion
   - the next step is to test whether the CARP precision-allocation policy transfers to a `q4` base, and to compare that against the current polar-based cache path
+## 2026-03-26 22:15:00
+- Notes: real_same_layer_qk_attention_benchmark_with_carp
+- Tasks: `qasper`, `multifieldqa_en`, `2wikimqa`
+- Samples/task: `1`
+- Model: `Qwen/Qwen2.5-0.5B-Instruct`
+- Protocol:
+  - real post-RoPE queries and keys
+  - same layer, same KV head
+  - causal key prefix per query position
+  - first `32` query positions per head used for online selector training
+  - later query positions used for evaluation
+- Finding:
+  - macro results:
+    - `polar`
+      - top-1 = `0.8087`
+      - top-8 = `0.9537`
+      - top-16 = `0.9629`
+      - rel-L2 = `0.1468`
+    - `polar_high`
+      - top-1 = `0.8296`
+      - top-8 = `0.9583`
+      - top-16 = `0.9654`
+      - rel-L2 = `0.1222`
+    - `q4_per_channel`
+      - top-1 = `0.8629`
+      - top-8 = `0.9930`
+      - top-16 = `0.9979`
+      - rel-L2 = `0.0935`
+    - `carp_polar`
+      - top-1 = `0.8293`
+      - top-8 = `0.9573`
+      - top-16 = `0.9642`
+      - mean used fraction = `0.0200`
+      - approx bits/coord = `3.3525`
+    - `carp_q4_exact`
+      - top-1 = `0.9350`
+      - top-8 = `0.9683`
+      - top-16 = `0.9788`
+      - mean used fraction = `0.0200`
+      - approx bits/coord = `4.2400`
+- Interpretation:
+  - the original CARP result survives the corrected benchmark:
+    - `carp_polar` matches `polar_high` at essentially low-polar cost
+  - on this model, `q4` remains the strongest plain base codec
+  - `q4 -> exact` promotion is very strong on top-1, but it does not dominate plain `q4` on top-8/top-16 containment
+  - the next meaningful end-to-end question is no longer purely offline:
+    - compare `polar -> high_polar` and `q4 -> exact` in the real cache-path and multi-step decode harnesses

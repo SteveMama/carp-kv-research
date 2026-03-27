@@ -104,6 +104,40 @@ So on this model, the correct framing is no longer “polar backbone is clearly 
 - the base codec should be treated as model-dependent
 - on `Qwen2.5-0.5B`, `q4_per_channel` is currently the better base candidate than low-bit polar
 
+After extending the same real-Q/K benchmark with `high_polar` and CARP variants:
+
+- `polar_high`
+  - top-1 = `0.8296`
+  - top-8 = `0.9583`
+  - top-16 = `0.9654`
+  - mean relative L2 = `0.1222`
+- `carp_polar`
+  - top-1 = `0.8293`
+  - top-8 = `0.9573`
+  - top-16 = `0.9642`
+  - mean used fraction = `0.0200`
+  - approximate bits/coord = `3.3525`
+- `carp_q4_exact`
+  - top-1 = `0.9350`
+  - top-8 = `0.9683`
+  - top-16 = `0.9788`
+  - mean used fraction = `0.0200`
+  - approximate bits/coord = `4.2400`
+
+This leads to two important conclusions:
+
+- the original CARP claim is now validated under the correct benchmark:
+  - `carp_polar` matches `polar_high` at essentially low-polar cost
+- the stronger base codec on this model is still `q4`
+  - but `q4`-backed CARP changes the objective:
+    - it greatly improves top-1 preservation
+    - it does not dominate plain `q4` on top-8/top-16 containment
+
+So the next end-to-end cache-path comparison should include both:
+
+- `polar -> high_polar`
+- `q4 -> exact`
+
 ## 2. Problem Statement
 
 We want to compress the KV cache while preserving model behavior during long-context autoregressive generation.
