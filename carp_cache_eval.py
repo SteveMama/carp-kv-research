@@ -50,6 +50,13 @@ def group_query_heads(query_states: torch.Tensor, kv_heads: int) -> torch.Tensor
     return query_states.view(batch, kv_heads, group, q_len, head_dim).mean(dim=2)
 
 
+def per_channel_q4_reconstruct(calibration: torch.Tensor, vectors: torch.Tensor) -> torch.Tensor:
+    max_abs = calibration.abs().amax(dim=0)
+    scale = torch.clamp(max_abs / 7.0, min=1e-6)
+    q = torch.round(vectors / scale).clamp(-8, 7)
+    return q * scale
+
+
 class CARPLayer(DynamicLayer):
     def __init__(
         self,
